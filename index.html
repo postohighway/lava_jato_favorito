@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>LAVA JATO FAVORITO - Sistema v8</title>
+  <title>LAVA JATO FAVORITO - Sistema</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Firebase (compat) – preencha se for usar nuvem -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -16,7 +16,7 @@
     header {
       background: #000;
       color: white;
-      padding: 12px 16px;
+      padding: 8px 0 10px 0;
       text-align: center;
     }
     .header-inner {
@@ -26,7 +26,9 @@
     }
     .logo-favorito {
       max-width: 260px;
+      width: 70%;
       height: auto;
+      display: block;
     }
     .container {
       max-width: 900px;
@@ -161,8 +163,8 @@
 <body>
 <header>
   <div class="header-inner">
-    <!-- Se quiser, troque por uma <img src="..."> com logo real -->
-    <h1 style="font-size:18px;margin:0;">LAVA JATO FAVORITO</h1>
+    <!-- A LOGO: coloque o arquivo logo_favorito.png no mesmo repositório -->
+    <img src="logo_favorito.png" alt="Favorito Lava Rápido" class="logo-favorito">
   </div>
 </header>
 
@@ -177,7 +179,7 @@
       <button id="tab-abertas">Comandas em aberto</button>
       <button id="tab-clientes">Clientes</button>
       <button id="tab-servicos">Serviços</button>
-      <button id="tab-caixa">Caixa / Tanque</button>
+      <button id="tab-caixa">Caixa</button>
       <button id="tab-backup">Backup</button>
     </div>
 
@@ -243,7 +245,7 @@
       <div id="msg-servicos" style="font-size: 14px; margin-top: 8px; color: #2b8a3e;"></div>
     </div>
 
-    <!-- CAIXA + TANQUE -->
+    <!-- CAIXA -->
     <div id="view-caixa" style="display:none;">
       <h2>Caixa do mês</h2>
       <label>Mês de referência</label>
@@ -292,47 +294,13 @@
 
       <h3>Detalhes do período</h3>
       <div id="caixa-periodo-detalhes" style="font-size:14px;"></div>
-
-      <hr style="margin:16px 0;" />
-
-      <h2>Controle do tanque de Etanol</h2>
-      <p class="info-small">
-        Calcule o <strong>pedido máximo de etanol</strong> sem estourar a capacidade do tanque (padrão 15.000 L),
-        considerando o estoque atual e a previsão de venda até a chegada do caminhão.
-      </p>
-
-      <div class="row-inline">
-        <div>
-          <label>Capacidade do tanque de etanol (L)</label>
-          <input type="number" id="et-capacidade" value="15000" min="0" />
-        </div>
-        <div>
-          <label>Estoque atual no tanque (L)</label>
-          <input type="number" id="et-estoque" placeholder="Ex.: 5928" min="0" />
-        </div>
-      </div>
-
-      <div class="row-inline">
-        <div>
-          <label>Previsão de venda até a entrega (L)</label>
-          <input type="number" id="et-previsao" placeholder="Ex.: 4000" min="0" />
-        </div>
-        <div>
-          <label>Pedido desejado de etanol (L)</label>
-          <input type="number" id="et-pedido-desejado" placeholder="Ex.: 10000" min="0" />
-        </div>
-      </div>
-
-      <button id="et-btn-calcular">Calcular limite do tanque</button>
-
-      <div id="et-resultado" style="margin-top:8px;font-size:13px;"></div>
     </div>
 
     <!-- BACKUP -->
     <div id="view-backup" style="display:none;">
       <h2>Backup / Restauração</h2>
       <p style="font-size: 14px;">
-        Este sistema envia backups automáticos para o <strong>Firebase</strong> (quando configurado).
+        Este sistema pode enviar backups automáticos para o <strong>Firebase</strong> (quando configurado).
       </p>
       <p style="font-size: 13px;">
         Unidade atual: <strong id="unit-label-text-2">UNIDADE_1</strong>. Para outra unidade, basta trocar a constante <code>UNIT_ID</code> no código.
@@ -389,7 +357,7 @@
     if (el) el.textContent = msg || '';
   }
 
-  const STORAGE_KEY = 'lavajatoFavoritoV8';
+  const STORAGE_KEY = 'lavajatoFavoritoV8_semTanque';
 
   function loadData() {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -466,11 +434,6 @@
 
   function formatMoney(v) {
     return 'R$ ' + Number(v || 0).toFixed(2).replace('.', ',');
-  }
-
-  function formatLitros(v) {
-    const n = Number(v || 0);
-    return n.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' L';
   }
 
   // ---- CLIENTES ----
@@ -839,6 +802,8 @@
   }
 
   // ---- CAIXA ----
+  var despesaEditandoId = null;
+
   function renderCaixaResumo() {
     var mesInput = document.getElementById('caixa-mes');
     if (!mesInput.value) return;
@@ -983,9 +948,6 @@
     detalhesDiv.innerHTML = htmlDet;
   }
 
-  // ---- EDIÇÃO DE DESPESAS ----
-  var despesaEditandoId = null;
-
   function editarDespesa(id) {
     var e = state.expenses.find(function(d) { return d.id === id; });
     if (!e) return;
@@ -1002,43 +964,6 @@
     state.expenses = state.expenses.filter(function(d) { return d.id !== id; });
     saveData(state, 'excluir-despesa');
     renderCaixaResumo();
-  }
-
-  // ---- CONTROLE DO TANQUE DE ETANOL ----
-  function calcularTanqueEtanol() {
-    const capacidade = Number(document.getElementById('et-capacidade').value) || 0;
-    const estoque = Number(document.getElementById('et-estoque').value) || 0;
-    const previsao = Number(document.getElementById('et-previsao').value) || 0;
-    const pedidoDesejado = Number(document.getElementById('et-pedido-desejado').value) || 0;
-
-    const resDiv = document.getElementById('et-resultado');
-
-    const estoquePrevisto = estoque - previsao;
-    const espacoLivre = capacidade - estoquePrevisto;
-    const pedidoMax = Math.max(0, espacoLivre);
-
-    let html = '';
-    html += '<p><strong>Capacidade do tanque:</strong> ' + formatLitros(capacidade) + '</p>';
-    html += '<p><strong>Estoque atual hoje:</strong> ' + formatLitros(estoque) + '</p>';
-    html += '<p><strong>Previsão de venda até a entrega:</strong> ' + formatLitros(previsao) + '</p>';
-    html += '<p><strong>Estoque previsto na chegada do caminhão:</strong> ' + formatLitros(estoquePrevisto) + '</p>';
-    html += '<p><strong>Espaço livre disponível na chegada:</strong> ' + formatLitros(espacoLivre) + '</p>';
-    html += '<p><strong>Pedido máximo permitido (sem estourar o tanque):</strong> ' + formatLitros(pedidoMax) + '</p>';
-
-    if (pedidoDesejado > 0) {
-      html += '<hr>';
-      html += '<p><strong>Pedido desejado:</strong> ' + formatLitros(pedidoDesejado) + '</p>';
-      if (pedidoDesejado <= pedidoMax) {
-        html += '<p class="ok">✅ OK – Esse pedido cabe no tanque dentro do limite.</p>';
-      } else {
-        const excesso = pedidoDesejado - pedidoMax;
-        html += '<p class="erro">⚠️ Pedido desejado ultrapassa a capacidade prevista do tanque.</p>';
-        html += '<p class="erro">Reduza o pedido em aproximadamente <strong>' + formatLitros(excesso) +
-                '</strong> ou use o valor máximo permitido acima.</p>';
-      }
-    }
-
-    resDiv.innerHTML = html;
   }
 
   // ---- TABS ----
@@ -1077,7 +1002,6 @@
   document.getElementById('tab-caixa').onclick = function() { showView('caixa'); };
   document.getElementById('tab-backup').onclick = function() { showView('backup'); };
   document.getElementById('btn-periodo').onclick = renderCaixaPeriodo;
-  document.getElementById('et-btn-calcular').onclick = calcularTanqueEtanol;
 
   // Abrir comanda
   document.getElementById('btn-abrir').onclick = function() {
@@ -1210,7 +1134,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'lavajato-favorito-v8-' + UNIT_ID + '.json';
+    a.download = 'lavajato-favorito-' + UNIT_ID + '.json';
     a.click();
     URL.revokeObjectURL(url);
   };
