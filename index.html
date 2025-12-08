@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>LAVA JATO FAVORITO - Sistema v8</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Firebase (compat) – preencha se for usar nuvem -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f5f5f5;
+    }
+    header {
+      background: #000;
+      color: white;
+      padding: 12px 16px;
+      text-align: center;
+    }
+    .header-inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .logo-favorito {
+      max-width: 260px;
+      height: auto;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 12px;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 {
+      margin-top: 0;
+    }
+    label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    input, select, button, textarea {
+      font-size: 16px;
+      padding: 6px 8px;
+      margin: 4px 0 8px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+    button {
+      cursor: pointer;
+      border-radius: 4px;
+      border: none;
+      background: #0b7285;
+      color: white;
+      font-weight: 600;
+    }
+    button.secondary {
+      background: #868e96;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #e7f5ff;
+      color: #0b7285;
+      margin-left: 6px;
+    }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+    }
+    .tabs button {
+      flex: 1;
+      font-size: 14px;
+      padding: 8px;
+      background: #dee2e6;
+      color: #343a40;
+      white-space: nowrap;
+    }
+    .tabs button.active {
+      background: #0b7285;
+      color: white;
+    }
+    @media (min-width: 700px) {
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 12px;
+      }
+    }
+    .thumb {
+      max-width: 100%;
+      max-height: 150px;
+      display: block;
+      margin-top: 8px;
+      border-radius: 4px;
+    }
+    .row-inline {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .row-inline > div {
+      flex: 1;
+      min-width: 140px;
+    }
+    .backup-status {
+      font-size: 11px;
+      margin-top: 4px;
+      color: #495057;
+    }
+    .unit-label {
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: #adb5bd;
+      text-align: right;
+    }
+    .info-small {
+      font-size: 12px;
+      color: #666;
+    }
+    .ok {
+      color: #2b8a3e;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .erro {
+      color: #c92a2a;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .extras-cera {
+      font-size: 13px;
+      margin-top: 4px;
+      margin-bottom: 4px;
+      display: none;
+    }
+    .extras-cera label {
+      font-weight: 400;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <!-- Se quiser, troque por uma <img src="..."> com logo real -->
+    <h1 style="font-size:18px;margin:0;">LAVA JATO FAVORITO</h1>
+  </div>
+</header>
+
+<div class="container">
+  <div class="unit-label">
+    Unidade: <strong id="unit-label-text">UNIDADE_1</strong>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <button id="tab-comanda" class="active">Nova comanda</button>
+      <button id="tab-abertas">Comandas em aberto</button>
+      <button id="tab-clientes">Clientes</button>
+      <button id="tab-servicos">Serviços</button>
+      <button id="tab-caixa">Caixa / Tanque</button>
+      <button id="tab-backup">Backup</button>
+    </div>
+
+    <!-- NOVA COMANDA -->
+    <div id="view-comanda">
+      <div class="grid-2">
+        <div>
+          <h2>Abrir comanda</h2>
+          <label>Cliente</label>
+          <select id="cliente-select"></select>
+
+          <label>Placa (opcional)</label>
+          <input id="placa-input" placeholder="ABC1234" />
+
+          <button id="btn-abrir">Abrir comanda</button>
+
+          <div id="msg-abrir" style="font-size: 14px; margin-top: 8px; color: #2b8a3e;"></div>
+        </div>
+        <div>
+          <h2>Serviços cadastrados</h2>
+          <ul id="lista-servicos" style="font-size: 14px;"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMANDAS EM ABERTO -->
+    <div id="view-abertas" style="display:none;">
+      <h2>Comandas em aberto</h2>
+      <div id="lista-abertas"></div>
+      <div id="detalhe-comanda"></div>
+    </div>
+
+    <!-- CLIENTES -->
+    <div id="view-clientes" style="display:none;">
+      <h2>Clientes</h2>
+      <label>Nome do cliente / empresa</label>
+      <input id="cliente-nome" placeholder="Ex.: João, Transportadora XYZ" />
+
+      <label>WhatsApp (somente números, com DDD)</label>
+      <input id="cliente-whatsapp" placeholder="Ex.: 34999999999" />
+
+      <label>Desconto (%)</label>
+      <input id="cliente-desconto" type="number" step="0.01" placeholder="Ex.: 10 para 10%" />
+
+      <label>Observações (tipo de veículo, empresa, etc.)</label>
+      <textarea id="cliente-notas" placeholder="Ex.: Hilux prata, placa ABC1234; empresa com cobrança mensal"></textarea>
+
+      <button id="btn-add-cliente">Cadastrar cliente</button>
+
+      <h3>Lista de clientes</h3>
+      <ul id="lista-clientes" style="font-size: 14px;"></ul>
+    </div>
+
+    <!-- SERVIÇOS -->
+    <div id="view-servicos" style="display:none;">
+      <h2>Serviços e valores</h2>
+      <p style="font-size: 14px;">
+        Altere os valores abaixo. Assim que salvar, os novos preços passam a ser usados nas comandas.
+        Os complementos de cera têm valores fixos: Cera líquida R$ 10,00 e Cera pasta R$ 20,00.
+      </p>
+      <div id="servicos-edicao"></div>
+      <button id="btn-salvar-servicos">Salvar alterações</button>
+      <div id="msg-servicos" style="font-size: 14px; margin-top: 8px; color: #2b8a3e;"></div>
+    </div>
+
+    <!-- CAIXA + TANQUE -->
+    <div id="view-caixa" style="display:none;">
+      <h2>Caixa do mês</h2>
+      <label>Mês de referência</label>
+      <input type="month" id="caixa-mes" />
+
+      <h3>Lançar despesa</h3>
+      <div class="row-inline">
+        <div>
+          <label>Data</label>
+          <input type="date" id="despesa-data" />
+        </div>
+        <div>
+          <label>Categoria</label>
+          <input id="despesa-categoria" placeholder="Ex.: água, luz, produto, salário" />
+        </div>
+      </div>
+      <label>Descrição</label>
+      <input id="despesa-descricao" placeholder="Ex.: conta de luz novembro" />
+
+      <label>Valor</label>
+      <input type="number" step="0.01" id="despesa-valor" />
+
+      <button id="btn-add-despesa">Lançar / salvar despesa</button>
+
+      <h3>Resumo do mês</h3>
+      <div id="caixa-resumo" style="font-size:14px;"></div>
+
+      <h3>Despesas do mês</h3>
+      <div id="caixa-despesas" style="font-size:14px;"></div>
+
+      <h2 style="margin-top:16px;">Relatório por período</h2>
+      <div class="row-inline">
+        <div>
+          <label>Data inicial</label>
+          <input type="date" id="periodo-inicio" />
+        </div>
+        <div>
+          <label>Data final</label>
+          <input type="date" id="periodo-fim" />
+        </div>
+      </div>
+      <button id="btn-periodo">Gerar relatório</button>
+
+      <h3>Resumo do período</h3>
+      <div id="caixa-periodo-resumo" style="font-size:14px;"></div>
+
+      <h3>Detalhes do período</h3>
+      <div id="caixa-periodo-detalhes" style="font-size:14px;"></div>
+
+      <hr style="margin:16px 0;" />
+
+      <h2>Controle do tanque de Etanol</h2>
+      <p class="info-small">
+        Calcule o <strong>pedido máximo de etanol</strong> sem estourar a capacidade do tanque (padrão 15.000 L),
+        considerando o estoque atual e a previsão de venda até a chegada do caminhão.
+      </p>
+
+      <div class="row-inline">
+        <div>
+          <label>Capacidade do tanque de etanol (L)</label>
+          <input type="number" id="et-capacidade" value="15000" min="0" />
+        </div>
+        <div>
+          <label>Estoque atual no tanque (L)</label>
+          <input type="number" id="et-estoque" placeholder="Ex.: 5928" min="0" />
+        </div>
+      </div>
+
+      <div class="row-inline">
+        <div>
+          <label>Previsão de venda até a entrega (L)</label>
+          <input type="number" id="et-previsao" placeholder="Ex.: 4000" min="0" />
+        </div>
+        <div>
+          <label>Pedido desejado de etanol (L)</label>
+          <input type="number" id="et-pedido-desejado" placeholder="Ex.: 10000" min="0" />
+        </div>
+      </div>
+
+      <button id="et-btn-calcular">Calcular limite do tanque</button>
+
+      <div id="et-resultado" style="margin-top:8px;font-size:13px;"></div>
+    </div>
+
+    <!-- BACKUP -->
+    <div id="view-backup" style="display:none;">
+      <h2>Backup / Restauração</h2>
+      <p style="font-size: 14px;">
+        Este sistema envia backups automáticos para o <strong>Firebase</strong> (quando configurado).
+      </p>
+      <p style="font-size: 13px;">
+        Unidade atual: <strong id="unit-label-text-2">UNIDADE_1</strong>. Para outra unidade, basta trocar a constante <code>UNIT_ID</code> no código.
+      </p>
+      <button id="btn-download-backup">Baixar backup (.json)</button>
+      <p style="margin-top: 12px; font-size: 14px;">
+        Para restaurar, escolha o arquivo de backup:
+      </p>
+      <input type="file" id="input-backup" accept="application/json" />
+      <div id="msg-backup" style="font-size: 14px; margin-top: 8px;"></div>
+      <div id="backup-status" class="backup-status"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ========= CONFIGURAÇÃO FIREBASE =========
+  // Preencha com seus dados se quiser backup em nuvem.
+  const firebaseConfig = {
+    apiKey: "COLE_AQUI",
+    authDomain: "COLE_AQUI.firebaseapp.com",
+    projectId: "COLE_AQUI",
+    storageBucket: "COLE_AQUI",
+    messagingSenderId: "COLE_AQUI",
+    appId: "COLE_AQUI"
+  };
+
+  // ========= IDENTIFICAÇÃO DA UNIDADE =========
+  const UNIT_ID = "UNIDADE_1";
+
+  // IDs dos serviços de LAVADA que aceitam cera
+  const WASH_SERVICE_IDS = [1, 2, 3, 4, 5];
+  const CERA_LIQ_VALOR = 10;
+  const CERA_PASTA_VALOR = 20;
+
+  let db = null;
+  let firebaseOk = false;
+
+  try {
+    if (firebaseConfig && firebaseConfig.apiKey !== "COLE_AQUI") {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      firebaseOk = true;
+      console.log("Firebase inicializado.");
+    } else {
+      console.warn("firebaseConfig ainda não preenchido.");
+    }
+  } catch (e) {
+    console.error("Erro ao iniciar Firebase:", e);
+  }
+
+  function setBackupStatus(msg) {
+    const el = document.getElementById('backup-status');
+    if (el) el.textContent = msg || '';
+  }
+
+  const STORAGE_KEY = 'lavajatoFavoritoV8';
+
+  function loadData() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      const initial = {
+        clients: [
+          { id: 1, name: 'Cliente Teste 1', whatsapp: '', discount: 0, notes: '' },
+          { id: 2, name: 'Empresa Exemplo Ltda.', whatsapp: '', discount: 0, notes: '' }
+        ],
+        services: [
+          { id: 1, name: 'Ducha carro pequeno', base_price: 30.00, pricing_type: 'unitario' },
+          { id: 2, name: 'Ducha carro grande', base_price: 50.00, pricing_type: 'unitario' },
+          { id: 3, name: 'Lavada completa carro pequeno', base_price: 50.00, pricing_type: 'unitario' },
+          { id: 4, name: 'Lavada completa carro grande', base_price: 60.00, pricing_type: 'unitario' },
+          { id: 5, name: 'Lavada caminhonete', base_price: 50.00, pricing_type: 'unitario' },
+          { id: 6, name: 'Martelinho (por amassado)', base_price: 80.00, pricing_type: 'por_amassado' },
+          { id: 7, name: 'Polimento farol (cada)', base_price: 40.00, pricing_type: 'unitario' },
+          { id: 8, name: 'Polimento pintura', base_price: 300.00, pricing_type: 'unitario' },
+          { id: 9, name: 'Higienização banco', base_price: 120.00, pricing_type: 'unitario' },
+          { id: 10, name: 'Lavagem de motor', base_price: 50.00, pricing_type: 'unitario' }
+        ],
+        orders: [],
+        expenses: [],
+        nextClientId: 3,
+        nextOrderId: 1,
+        nextExpenseId: 1
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+      return initial;
+    }
+    try {
+      const data = JSON.parse(raw);
+      data.clients = (data.clients || []).map(c => Object.assign({ discount: 0, notes: '', whatsapp: '' }, c));
+      data.services = data.services || [];
+      data.orders = data.orders || [];
+      data.expenses = data.expenses || [];
+      data.nextClientId = data.nextClientId || (data.clients.length + 1);
+      data.nextOrderId = data.nextOrderId || 1;
+      data.nextExpenseId = data.nextExpenseId || 1;
+      return data;
+    } catch (e) {
+      console.error('Erro ao ler storage, resetando.', e);
+      localStorage.removeItem(STORAGE_KEY);
+      return loadData();
+    }
+  }
+
+  function backupToCloud(reason) {
+    if (!firebaseOk || !db) {
+      setBackupStatus('Backup em nuvem: configuração Firebase pendente.');
+      return;
+    }
+    const snapshot = JSON.parse(JSON.stringify(state));
+    const ts = new Date().toISOString();
+    db.collection('lavajato_backups').add({
+      createdAt: ts,
+      reason: reason || 'auto',
+      unitId: UNIT_ID,
+      state: snapshot
+    }).then(() => {
+      setBackupStatus('Backup automático enviado (' + UNIT_ID + ') em ' + ts);
+    }).catch(err => {
+      console.error('Erro no backup em nuvem:', err);
+      setBackupStatus('Falha ao enviar backup em nuvem.');
+    });
+  }
+
+  function saveData(data, reason) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    backupToCloud(reason || 'saveData');
+  }
+
+  let state = loadData();
+
+  function formatMoney(v) {
+    return 'R$ ' + Number(v || 0).toFixed(2).replace('.', ',');
+  }
+
+  function formatLitros(v) {
+    const n = Number(v || 0);
+    return n.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' L';
+  }
+
+  // ---- CLIENTES ----
+  function renderClientesSelect() {
+    const sel = document.getElementById('cliente-select');
+    sel.innerHTML = '';
+    const optEmpty = document.createElement('option');
+    optEmpty.value = '';
+    optEmpty.textContent = 'Selecione um cliente';
+    sel.appendChild(optEmpty);
+
+    state.clients.forEach(function(c) {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.name;
+      sel.appendChild(opt);
+    });
+  }
+
+  function renderClientesLista() {
+    const ul = document.getElementById('lista-clientes');
+    ul.innerHTML = '';
+    state.clients.forEach(function(c) {
+      const li = document.createElement('li');
+      let texto = c.name;
+      if (c.whatsapp) {
+        texto += ' - WhatsApp: ' + c.whatsapp;
+      }
+      if (c.discount) {
+        texto += ' - Desconto: ' + c.discount + '%';
+      }
+      if (c.notes) {
+        texto += ' - Obs.: ' + c.notes;
+      }
+      li.textContent = texto;
+      ul.appendChild(li);
+    });
+  }
+
+  // ---- SERVIÇOS ----
+  function renderServicosListaResumo() {
+    const ul = document.getElementById('lista-servicos');
+    ul.innerHTML = '';
+    state.services.forEach(function(s) {
+      const li = document.createElement('li');
+      li.textContent = s.name + ' - ' + formatMoney(s.base_price);
+      if (s.pricing_type === 'por_amassado') {
+        const span = document.createElement('span');
+        span.className = 'pill';
+        span.textContent = 'por amassado';
+        li.appendChild(span);
+      }
+      ul.appendChild(li);
+    });
+  }
+
+  function renderServicosEdicao() {
+    const container = document.getElementById('servicos-edicao');
+    container.innerHTML = '';
+    state.services.forEach(function(s) {
+      const div = document.createElement('div');
+      div.style.marginBottom = '8px';
+      div.innerHTML =
+        '<label>' + s.name + '</label>' +
+        '<input type="number" step="0.01" data-servico-id="' + s.id + '" value="' + s.base_price + '" />';
+      container.appendChild(div);
+    });
+  }
+
+  // ---- COMANDAS EM ABERTO ----
+  function renderComandasAbertas() {
+    const div = document.getElementById('lista-abertas');
+    div.innerHTML = '';
+
+    const abertas = state.orders.filter(function(o) { return o.status === 'aberta'; });
+    if (abertas.length === 0) {
+      div.innerHTML = '<p>Nenhuma comanda em aberto.</p>';
+      document.getElementById('detalhe-comanda').innerHTML = '';
+      return;
+    }
+
+    const ul = document.createElement('ul');
+    abertas.forEach(function(o) {
+      const li = document.createElement('li');
+      const cliente = state.clients.find(function(c) { return c.id === o.client_id; });
+      li.style.cursor = 'pointer';
+      li.style.padding = '4px 0';
+      li.textContent =
+        '#' + o.id + ' - ' +
+        (cliente ? cliente.name : 'Cliente ' + o.client_id) +
+        ' - Placa: ' + (o.plate || '-') +
+        ' - Total: ' + formatMoney(o.total);
+      li.onclick = function() { mostrarDetalheComanda(o.id); };
+      ul.appendChild(li);
+    });
+
+    div.appendChild(ul);
+  }
+
+  // ---- DETALHE DA COMANDA ----
+  function mostrarDetalheComanda(orderId) {
+    const o = state.orders.find(function(ord) { return ord.id === orderId; });
+    if (!o) return;
+    const cliente = state.clients.find(function(c) { return c.id === o.client_id; });
+    const div = document.getElementById('detalhe-comanda');
+
+    const itens = o.items || [];
+    let html = '';
+    html += '<h3>Comanda #' + o.id + '</h3>';
+    html += '<p><strong>Cliente:</strong> ' + (cliente ? cliente.name : 'Cliente ' + o.client_id) + '</p>';
+    if (cliente && cliente.whatsapp) {
+      html += '<p><strong>WhatsApp:</strong> ' + cliente.whatsapp + '</p>';
+    }
+    if (cliente && cliente.notes) {
+      html += '<p><strong>Obs. cliente:</strong> ' + cliente.notes + '</p>';
+    }
+    html += '<p><strong>Placa:</strong> ' + (o.plate || '-') + '</p>';
+    html += '<p><strong>Desconto do cliente:</strong> ' + (cliente && cliente.discount ? (cliente.discount + '%') : '0%') + '</p>';
+    html += '<p><strong>Status:</strong> ' + o.status + '</p>';
+    html += '<p><strong>Total:</strong> ' + formatMoney(o.total) + '</p>';
+
+    html += '<h4>Itens</h4>';
+    if (itens.length === 0) {
+      html += '<p>Nenhum item ainda.</p>';
+    } else {
+      html += '<ul>';
+      itens.forEach(function(it) {
+        const s = state.services.find(function(se) { return se.id === it.service_id; });
+        let extrasTxt = '';
+        if (it.extras) {
+          const arr = [];
+          if (it.extras.cera_liquida) arr.push('cera líquida');
+          if (it.extras.cera_pasta) arr.push('cera pasta');
+          if (arr.length) extrasTxt = ' (Extras: ' + arr.join(', ') + ')';
+        }
+        html += '<li>' +
+          (s ? s.name : 'Serviço ' + it.service_id) +
+          extrasTxt +
+          ' - Qtde: ' + it.quantity +
+          ' - Unit: ' + formatMoney(it.unit_price) +
+          ' - Total: ' + formatMoney(it.total) +
+          '</li>';
+      });
+      html += '</ul>';
+    }
+
+    html += '<h4>Foto do veículo</h4>';
+    html += '<input type="file" id="foto-veiculo" accept="image/*" capture="environment" />';
+    if (o.photoDataUrl) {
+      html += '<img src="' + o.photoDataUrl + '" class="thumb" alt="Foto do veículo" />';
+    }
+
+    if (o.status === 'aberta') {
+      html += '<h4>Adicionar item</h4>';
+      html += '<label>Serviço</label><br />';
+      html += '<select id="add-servico"></select><br />';
+      html += '<label>Quantidade</label><br />';
+      html += '<input id="add-qty" type="number" min="1" value="1" /><br />';
+      html += '<label>Preço unitário</label><br />';
+      html += '<input id="add-preco" type="number" step="0.01" /><br />';
+      html += '<div id="extras-cera" class="extras-cera">';
+      html += '<label>Complementos (opcionais)</label><br />';
+      html += '<label><input type="checkbox" id="extra-cera-liquida" /> Cera líquida (+ ' + formatMoney(CERA_LIQ_VALOR) + ')</label><br />';
+      html += '<label><input type="checkbox" id="extra-cera-pasta" /> Cera pasta (+ ' + formatMoney(CERA_PASTA_VALOR) + ')</label><br />';
+      html += '</div>';
+      html += '<button id="btn-add-item">Adicionar item</button>';
+      html += '<hr />';
+      html += '<button class="secondary" id="btn-fechar-comanda">Fechar comanda</button> ';
+      html += '<button class="secondary" id="btn-cancelar-comanda" style="background:#c92a2a;">Cancelar comanda</button>';
+    } else {
+      html += '<hr />';
+      html += '<button id="btn-whatsapp" class="secondary">Abrir WhatsApp com resumo</button> ';
+      html += '<button id="btn-cancelar-comanda-fechada" class="secondary" style="background:#c92a2a;">Cancelar comanda</button>';
+    }
+
+    div.innerHTML = html;
+
+    // Foto do veículo
+    var fotoInput = document.getElementById('foto-veiculo');
+    if (fotoInput) {
+      fotoInput.onchange = function(evt) {
+        var file = evt.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          o.photoDataUrl = e.target.result;
+          saveData(state, 'foto-veiculo');
+          mostrarDetalheComanda(orderId);
+        };
+        reader.readAsDataURL(file);
+      };
+    }
+
+    if (o.status === 'aberta') {
+      const selServ = document.getElementById('add-servico');
+      state.services.forEach(function(s) {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = s.name + ' (' + formatMoney(s.base_price) + ')';
+        selServ.appendChild(opt);
+      });
+
+      const precoInput = document.getElementById('add-preco');
+      const qtyInput = document.getElementById('add-qty');
+      const extrasDiv = document.getElementById('extras-cera');
+
+      function atualizarExtrasVisibilidade() {
+        const servId = Number(selServ.value);
+        const isLavada = WASH_SERVICE_IDS.indexOf(servId) !== -1;
+        if (isLavada) {
+          extrasDiv.style.display = 'block';
+        } else {
+          extrasDiv.style.display = 'none';
+          const chkL = document.getElementById('extra-cera-liquida');
+          const chkP = document.getElementById('extra-cera-pasta');
+          if (chkL) chkL.checked = false;
+          if (chkP) chkP.checked = false;
+        }
+      }
+
+      selServ.onchange = function() {
+        const servId = Number(selServ.value);
+        const servObj = state.services.find(function(s) { return s.id === servId; });
+        if (servObj) {
+          precoInput.value = servObj.base_price;
+        }
+        atualizarExtrasVisibilidade();
+      };
+
+      if (state.services.length > 0) {
+        selServ.value = state.services[0].id;
+        selServ.onchange();
+      }
+
+      document.getElementById('btn-add-item').onclick = function() {
+        const servId = Number(selServ.value);
+        const qty = Number(qtyInput.value) || 1;
+        const preco = Number(precoInput.value);
+
+        if (!servId || !preco) {
+          alert('Selecione o serviço e informe o preço.');
+          return;
+        }
+
+        let precoComDesconto = preco;
+        if (cliente && cliente.discount && cliente.discount > 0) {
+          precoComDesconto = preco * (1 - (cliente.discount / 100));
+        }
+
+        const isLavada = WASH_SERVICE_IDS.indexOf(servId) !== -1;
+        let extrasValor = 0;
+        let extrasData = null;
+
+        if (isLavada) {
+          const chkL = document.getElementById('extra-cera-liquida');
+          const chkP = document.getElementById('extra-cera-pasta');
+          extrasData = {};
+          if (chkL && chkL.checked) {
+            extrasValor += CERA_LIQ_VALOR;
+            extrasData.cera_liquida = true;
+          }
+          if (chkP && chkP.checked) {
+            extrasValor += CERA_PASTA_VALOR;
+            extrasData.cera_pasta = true;
+          }
+          if (!extrasData.cera_liquida && !extrasData.cera_pasta) {
+            extrasData = null;
+          }
+        }
+
+        const unitarioFinal = precoComDesconto + extrasValor;
+        const total = qty * unitarioFinal;
+
+        o.items = o.items || [];
+        o.items.push({
+          service_id: servId,
+          quantity: qty,
+          unit_price: unitarioFinal,
+          total: total,
+          extras: extrasData
+        });
+        o.total = (o.total || 0) + total;
+        saveData(state, 'add-item-comanda');
+        mostrarDetalheComanda(orderId);
+        renderComandasAbertas();
+      };
+
+      document.getElementById('btn-fechar-comanda').onclick = function() {
+        if (!confirm('Deseja fechar esta comanda?')) return;
+        o.status = 'fechada';
+        o.closed_at = new Date().toISOString();
+        saveData(state, 'fechar-comanda');
+        renderComandasAbertas();
+        mostrarDetalheComanda(orderId);
+      };
+
+      var btnCanc = document.getElementById('btn-cancelar-comanda');
+      if (btnCanc) {
+        btnCanc.onclick = function() {
+          if (!confirm('Cancelar esta comanda? Ela será ignorada nos relatórios.')) return;
+          o.status = 'cancelada';
+          saveData(state, 'cancelar-comanda-aberta');
+          renderComandasAbertas();
+          document.getElementById('detalhe-comanda').innerHTML = '';
+        };
+      }
+    } else {
+      var btnWhats = document.getElementById('btn-whatsapp');
+      if (btnWhats) {
+        btnWhats.onclick = function() {
+          if (!cliente || !cliente.whatsapp) {
+            alert('Cliente não tem WhatsApp cadastrado.');
+            return;
+          }
+          var numero = cliente.whatsapp.replace(/\D/g, '');
+          if (numero.length < 10) {
+            alert('WhatsApp inválido.');
+            return;
+          }
+          var linhas = [];
+          linhas.push('Comanda #' + o.id);
+          linhas.push('Cliente: ' + cliente.name);
+          if (o.plate) linhas.push('Placa: ' + o.plate);
+          linhas.push('Status: ' + o.status);
+          linhas.push('--- Serviços ---');
+          (o.items || []).forEach(function(it) {
+            var s = state.services.find(function(se) { return se.id === it.service_id; });
+            var nomeServ = s ? s.name : ('Serviço ' + it.service_id);
+            var extrasParte = '';
+            if (it.extras) {
+              var arr = [];
+              if (it.extras.cera_liquida) arr.push('cera líquida');
+              if (it.extras.cera_pasta) arr.push('cera pasta');
+              if (arr.length) extrasParte = ' | Extras: ' + arr.join(', ');
+            }
+            linhas.push(
+              nomeServ +
+              extrasParte +
+              ' | Qtde: ' + it.quantity +
+              ' | Unit: ' + formatMoney(it.unit_price) +
+              ' | Total: ' + formatMoney(it.total)
+            );
+          });
+          linhas.push('----------------');
+          linhas.push('Total da comanda: ' + formatMoney(o.total));
+          linhas.push('');
+          linhas.push('(Foto do veículo salva na comanda no sistema local.)');
+
+          var texto = encodeURIComponent(linhas.join('\n'));
+          var url = 'https://wa.me/' + numero + '?text=' + texto;
+          window.open(url, '_blank');
+        };
+      }
+
+      var btnCancFech = document.getElementById('btn-cancelar-comanda-fechada');
+      if (btnCancFech) {
+        btnCancFech.onclick = function() {
+          if (!confirm('Cancelar esta comanda fechada? Ela será ignorada nos relatórios.')) return;
+          o.status = 'cancelada';
+          saveData(state, 'cancelar-comanda-fechada');
+          renderComandasAbertas();
+          document.getElementById('detalhe-comanda').innerHTML = '';
+        };
+      }
+    }
+  }
+
+  // ---- CAIXA ----
+  function renderCaixaResumo() {
+    var mesInput = document.getElementById('caixa-mes');
+    if (!mesInput.value) return;
+    var parts = mesInput.value.split('-');
+    var ano = parseInt(parts[0], 10);
+    var mes = parseInt(parts[1], 10);
+
+    var receita = 0;
+    state.orders.forEach(function(o) {
+      if (o.status !== 'fechada') return;
+      var d = o.closed_at ? new Date(o.closed_at) : (o.created_at ? new Date(o.created_at) : null);
+      if (!d || isNaN(d.getTime())) return;
+      if (d.getFullYear() === ano && (d.getMonth() + 1) === mes) {
+        receita += (o.total || 0);
+      }
+    });
+
+    var despesasMes = [];
+    var totalDespesas = 0;
+    state.expenses.forEach(function(e) {
+      if (!e.date) return;
+      var d = new Date(e.date);
+      if (isNaN(d.getTime())) return;
+      if (d.getFullYear() === ano && (d.getMonth() + 1) === mes) {
+        despesasMes.push(e);
+        totalDespesas += (e.amount || 0);
+      }
+    });
+
+    var saldo = receita - totalDespesas;
+
+    var resumoDiv = document.getElementById('caixa-resumo');
+    resumoDiv.innerHTML =
+      '<p><strong>Receita de serviços:</strong> ' + formatMoney(receita) + '</p>' +
+      '<p><strong>Total de despesas:</strong> ' + formatMoney(totalDespesas) + '</p>' +
+      '<p><strong>Saldo:</strong> ' + formatMoney(saldo) + '</p>';
+
+    var despDiv = document.getElementById('caixa-despesas');
+    if (despesasMes.length === 0) {
+      despDiv.innerHTML = '<p>Não há despesas lançadas neste mês.</p>';
+    } else {
+      var html = '<ul>';
+      despesasMes.forEach(function(e) {
+        html += '<li>' +
+          e.date + ' - ' +
+          (e.category || '') + ' - ' +
+          (e.description || '') + ' - ' +
+          formatMoney(e.amount) +
+          ' <button type="button" onclick="editarDespesa(' + e.id + ')">Editar</button>' +
+          ' <button type="button" onclick="excluirDespesa(' + e.id + ')" style="background:#c92a2a;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:12px;">Excluir</button>' +
+          '</li>';
+      });
+      html += '</ul>';
+      despDiv.innerHTML = html;
+    }
+  }
+
+  function renderCaixaPeriodo() {
+    var inicioStr = document.getElementById('periodo-inicio').value;
+    var fimStr = document.getElementById('periodo-fim').value;
+    var resumoDiv = document.getElementById('caixa-periodo-resumo');
+    var detalhesDiv = document.getElementById('caixa-periodo-detalhes');
+    resumoDiv.innerHTML = '';
+    detalhesDiv.innerHTML = '';
+
+    if (!inicioStr || !fimStr) {
+      alert('Informe a data inicial e a data final.');
+      return;
+    }
+
+    var inicio = new Date(inicioStr + 'T00:00:00');
+    var fim = new Date(fimStr + 'T23:59:59');
+    if (isNaN(inicio.getTime()) || isNaN(fim.getTime())) {
+      alert('Datas inválidas.');
+      return;
+    }
+    if (fim < inicio) {
+      alert('A data final não pode ser antes da inicial.');
+      return;
+    }
+
+    var receita = 0;
+    var listaComandas = [];
+    state.orders.forEach(function(o) {
+      if (o.status !== 'fechada') return;
+      var d = o.closed_at ? new Date(o.closed_at) : (o.created_at ? new Date(o.created_at) : null);
+      if (!d || isNaN(d.getTime())) return;
+      if (d >= inicio && d <= fim) {
+        receita += (o.total || 0);
+        listaComandas.push(o);
+      }
+    });
+
+    var despesas = 0;
+    var listaDespesas = [];
+    state.expenses.forEach(function(e) {
+      if (!e.date) return;
+      var d = new Date(e.date + 'T00:00:00');
+      if (isNaN(d.getTime())) return;
+      if (d >= inicio && d <= fim) {
+        despesas += (e.amount || 0);
+        listaDespesas.push(e);
+      }
+    });
+
+    var saldo = receita - despesas;
+
+    resumoDiv.innerHTML =
+      '<p><strong>Receita de serviços no período:</strong> ' + formatMoney(receita) + '</p>' +
+      '<p><strong>Total de despesas no período:</strong> ' + formatMoney(despesas) + '</p>' +
+      '<p><strong>Saldo do período:</strong> ' + formatMoney(saldo) + '</p>';
+
+    var htmlDet = '';
+    if (listaComandas.length === 0) {
+      htmlDet += '<p>Não há comandas fechadas neste período.</p>';
+    } else {
+      htmlDet += '<h4>Comandas</h4><ul>';
+      listaComandas.forEach(function(o) {
+        var cliente = state.clients.find(function(c) { return c.id === o.client_id; });
+        var nomeCliente = cliente ? cliente.name : ('Cliente ' + o.client_id);
+        var dataTxt = o.closed_at ? o.closed_at.substring(0,10) : (o.created_at ? o.created_at.substring(0,10) : '');
+        htmlDet += '<li>#' + o.id + ' - ' + nomeCliente +
+          ' - Data: ' + dataTxt +
+          ' - Total: ' + formatMoney(o.total || 0) + '</li>';
+      });
+      htmlDet += '</ul>';
+    }
+
+    if (listaDespesas.length === 0) {
+      htmlDet += '<p>Não há despesas neste período.</p>';
+    } else {
+      htmlDet += '<h4>Despesas</h4><ul>';
+      listaDespesas.forEach(function(e) {
+        htmlDet += '<li>' + e.date + ' - ' +
+          (e.category || '') + ' - ' +
+          (e.description || '') + ' - ' +
+          formatMoney(e.amount || 0) + '</li>';
+      });
+      htmlDet += '</ul>';
+    }
+
+    detalhesDiv.innerHTML = htmlDet;
+  }
+
+  // ---- EDIÇÃO DE DESPESAS ----
+  var despesaEditandoId = null;
+
+  function editarDespesa(id) {
+    var e = state.expenses.find(function(d) { return d.id === id; });
+    if (!e) return;
+    despesaEditandoId = id;
+    document.getElementById('despesa-data').value = e.date || '';
+    document.getElementById('despesa-categoria').value = e.category || '';
+    document.getElementById('despesa-descricao').value = e.description || '';
+    document.getElementById('despesa-valor').value = e.amount || '';
+    alert('Editando despesa #' + id + '. Ao salvar, ela será atualizada.');
+  }
+
+  function excluirDespesa(id) {
+    if (!confirm('Deseja realmente excluir esta despesa?')) return;
+    state.expenses = state.expenses.filter(function(d) { return d.id !== id; });
+    saveData(state, 'excluir-despesa');
+    renderCaixaResumo();
+  }
+
+  // ---- CONTROLE DO TANQUE DE ETANOL ----
+  function calcularTanqueEtanol() {
+    const capacidade = Number(document.getElementById('et-capacidade').value) || 0;
+    const estoque = Number(document.getElementById('et-estoque').value) || 0;
+    const previsao = Number(document.getElementById('et-previsao').value) || 0;
+    const pedidoDesejado = Number(document.getElementById('et-pedido-desejado').value) || 0;
+
+    const resDiv = document.getElementById('et-resultado');
+
+    const estoquePrevisto = estoque - previsao;
+    const espacoLivre = capacidade - estoquePrevisto;
+    const pedidoMax = Math.max(0, espacoLivre);
+
+    let html = '';
+    html += '<p><strong>Capacidade do tanque:</strong> ' + formatLitros(capacidade) + '</p>';
+    html += '<p><strong>Estoque atual hoje:</strong> ' + formatLitros(estoque) + '</p>';
+    html += '<p><strong>Previsão de venda até a entrega:</strong> ' + formatLitros(previsao) + '</p>';
+    html += '<p><strong>Estoque previsto na chegada do caminhão:</strong> ' + formatLitros(estoquePrevisto) + '</p>';
+    html += '<p><strong>Espaço livre disponível na chegada:</strong> ' + formatLitros(espacoLivre) + '</p>';
+    html += '<p><strong>Pedido máximo permitido (sem estourar o tanque):</strong> ' + formatLitros(pedidoMax) + '</p>';
+
+    if (pedidoDesejado > 0) {
+      html += '<hr>';
+      html += '<p><strong>Pedido desejado:</strong> ' + formatLitros(pedidoDesejado) + '</p>';
+      if (pedidoDesejado <= pedidoMax) {
+        html += '<p class="ok">✅ OK – Esse pedido cabe no tanque dentro do limite.</p>';
+      } else {
+        const excesso = pedidoDesejado - pedidoMax;
+        html += '<p class="erro">⚠️ Pedido desejado ultrapassa a capacidade prevista do tanque.</p>';
+        html += '<p class="erro">Reduza o pedido em aproximadamente <strong>' + formatLitros(excesso) +
+                '</strong> ou use o valor máximo permitido acima.</p>';
+      }
+    }
+
+    resDiv.innerHTML = html;
+  }
+
+  // ---- TABS ----
+  function showView(view) {
+    document.getElementById('view-comanda').style.display = 'none';
+    document.getElementById('view-abertas').style.display = 'none';
+    document.getElementById('view-clientes').style.display = 'none';
+    document.getElementById('view-servicos').style.display = 'none';
+    document.getElementById('view-caixa').style.display = 'none';
+    document.getElementById('view-backup').style.display = 'none';
+
+    document.getElementById('view-' + view).style.display = 'block';
+
+    document.getElementById('tab-comanda').classList.remove('active');
+    document.getElementById('tab-abertas').classList.remove('active');
+    document.getElementById('tab-clientes').classList.remove('active');
+    document.getElementById('tab-servicos').classList.remove('active');
+    document.getElementById('tab-caixa').classList.remove('active');
+    document.getElementById('tab-backup').classList.remove('active');
+
+    document.getElementById('tab-' + view).classList.add('active');
+
+    if (view === 'abertas') {
+      renderComandasAbertas();
+    }
+    if (view === 'caixa') {
+      renderCaixaResumo();
+    }
+  }
+
+  // ---- EVENTOS GERAIS ----
+  document.getElementById('tab-comanda').onclick = function() { showView('comanda'); };
+  document.getElementById('tab-abertas').onclick = function() { showView('abertas'); };
+  document.getElementById('tab-clientes').onclick = function() { showView('clientes'); };
+  document.getElementById('tab-servicos').onclick = function() { showView('servicos'); };
+  document.getElementById('tab-caixa').onclick = function() { showView('caixa'); };
+  document.getElementById('tab-backup').onclick = function() { showView('backup'); };
+  document.getElementById('btn-periodo').onclick = renderCaixaPeriodo;
+  document.getElementById('et-btn-calcular').onclick = calcularTanqueEtanol;
+
+  // Abrir comanda
+  document.getElementById('btn-abrir').onclick = function() {
+    const clienteId = Number(document.getElementById('cliente-select').value);
+    const placa = document.getElementById('placa-input').value.trim().toUpperCase();
+    const msg = document.getElementById('msg-abrir');
+
+    if (!clienteId) {
+      alert('Selecione um cliente');
+      return;
+    }
+
+    const newOrder = {
+      id: state.nextOrderId++,
+      client_id: clienteId,
+      plate: placa || null,
+      status: 'aberta',
+      total: 0,
+      items: [],
+      created_at: new Date().toISOString(),
+      photoDataUrl: null
+    };
+
+    state.orders.push(newOrder);
+    saveData(state, 'abrir-comanda');
+    renderComandasAbertas();
+    msg.textContent = 'Comanda #' + newOrder.id + ' aberta com sucesso.';
+    setTimeout(function() { msg.textContent = ''; }, 3000);
+    document.getElementById('placa-input').value = '';
+  };
+
+  // Cadastrar cliente
+  document.getElementById('btn-add-cliente').onclick = function() {
+    const nomeInput = document.getElementById('cliente-nome');
+    const whatsappInput = document.getElementById('cliente-whatsapp');
+    const descontoInput = document.getElementById('cliente-desconto');
+    const notasInput = document.getElementById('cliente-notas');
+
+    const nome = nomeInput.value.trim();
+    const whatsapp = whatsappInput.value.trim();
+    const desconto = Number(descontoInput.value) || 0;
+    const notas = notasInput.value.trim();
+
+    if (!nome) {
+      alert('Informe o nome do cliente');
+      return;
+    }
+    const novo = {
+      id: state.nextClientId++,
+      name: nome,
+      whatsapp: whatsapp,
+      discount: desconto,
+      notes: notas
+    };
+    state.clients.push(novo);
+    saveData(state, 'novo-cliente');
+    nomeInput.value = '';
+    whatsappInput.value = '';
+    descontoInput.value = '';
+    notasInput.value = '';
+    renderClientesSelect();
+    renderClientesLista();
+  };
+
+  // Salvar serviços editados
+  document.getElementById('btn-salvar-servicos').onclick = function() {
+    const container = document.getElementById('servicos-edicao');
+    const inputs = container.querySelectorAll('input[data-servico-id]');
+    inputs.forEach(function(input) {
+      const id = Number(input.getAttribute('data-servico-id'));
+      const valor = Number(input.value);
+      const serv = state.services.find(function(s) { return s.id === id; });
+      if (serv && !isNaN(valor) && valor >= 0) {
+        serv.base_price = valor;
+      }
+    });
+    saveData(state, 'editar-servicos');
+    renderServicosListaResumo();
+    document.getElementById('msg-servicos').textContent = 'Valores atualizados com sucesso.';
+    setTimeout(function() {
+      document.getElementById('msg-servicos').textContent = '';
+    }, 3000);
+  };
+
+  // Lançar / salvar despesa
+  document.getElementById('btn-add-despesa').onclick = function() {
+    var data = document.getElementById('despesa-data').value;
+    var categoria = document.getElementById('despesa-categoria').value.trim();
+    var descricao = document.getElementById('despesa-descricao').value.trim();
+    var valor = Number(document.getElementById('despesa-valor').value);
+
+    if (!data || !valor) {
+      alert('Informe a data e o valor da despesa.');
+      return;
+    }
+
+    if (despesaEditandoId) {
+      var e = state.expenses.find(function(d) { return d.id === despesaEditandoId; });
+      if (e) {
+        e.date = data;
+        e.category = categoria;
+        e.description = descricao;
+        e.amount = valor;
+      }
+      despesaEditandoId = null;
+    } else {
+      var nova = {
+        id: state.nextExpenseId++,
+        date: data,
+        category: categoria,
+        description: descricao,
+        amount: valor
+      };
+      state.expenses.push(nova);
+    }
+
+    saveData(state, 'lancar-despesa');
+
+    document.getElementById('despesa-data').value = '';
+    document.getElementById('despesa-categoria').value = '';
+    document.getElementById('despesa-descricao').value = '';
+    document.getElementById('despesa-valor').value = '';
+
+    renderCaixaResumo();
+  };
+
+  // Backup download
+  document.getElementById('btn-download-backup').onclick = function() {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'lavajato-favorito-v8-' + UNIT_ID + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Backup restore
+  document.getElementById('input-backup').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      try {
+        const json = JSON.parse(event.target.result);
+        if (!json.clients || !json.services || !json.orders || !json.expenses) {
+          throw new Error('Formato inválido');
+        }
+        state = json;
+        saveData(state, 'restore-backup');
+        renderClientesSelect();
+        renderClientesLista();
+        renderServicosListaResumo();
+        renderServicosEdicao();
+        renderComandasAbertas();
+        renderCaixaResumo();
+        document.getElementById('msg-backup').textContent = 'Backup restaurado com sucesso.';
+      } catch (err) {
+        console.error(err);
+        alert('Arquivo de backup inválido.');
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  function setMesAtualNoCaixa() {
+    var hoje = new Date();
+    var ano = hoje.getFullYear();
+    var mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    var mesInput = document.getElementById('caixa-mes');
+    mesInput.value = ano + '-' + mes;
+    mesInput.onchange = renderCaixaResumo;
+  }
+
+  // Inicialização
+  renderClientesSelect();
+  renderClientesLista();
+  renderServicosListaResumo();
+  renderServicosEdicao();
+  renderComandasAbertas();
+  setMesAtualNoCaixa();
+
+  // Atualiza label de unidade
+  document.getElementById('unit-label-text').textContent = UNIT_ID;
+  document.getElementById('unit-label-text-2').textContent = UNIT_ID;
+</script>
+</body>
+</html>
