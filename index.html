@@ -4,166 +4,46 @@
   <meta charset="UTF-8" />
   <title>LAVA JATO FAVORITO - Sistema</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Firebase (compat) – preencha se for usar nuvem -->
+
+  <!-- Firebase (compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
   <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      margin: 0;
-      background: #f5f5f5;
-    }
-    header {
-      background: #000;
-      color: white;
-      padding: 8px 0 10px 0;
-      text-align: center;
-    }
-    .header-inner {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .logo-favorito {
-      max-width: 260px;
-      width: 70%;
-      height: auto;
-      display: block;
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 12px;
-    }
-    .card {
-      background: white;
-      border-radius: 8px;
-      padding: 12px 16px;
-      margin-bottom: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    h1, h2, h3 {
-      margin-top: 0;
-    }
-    label {
-      font-size: 14px;
-      font-weight: 500;
-    }
-    input, select, button, textarea {
-      font-size: 16px;
-      padding: 6px 8px;
-      margin: 4px 0 8px 0;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    textarea {
-      min-height: 60px;
-      resize: vertical;
-    }
-    button {
-      cursor: pointer;
-      border-radius: 4px;
-      border: none;
-      background: #0b7285;
-      color: white;
-      font-weight: 600;
-    }
-    button.secondary {
-      background: #868e96;
-    }
-    ul {
-      padding-left: 20px;
-    }
-    .pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 12px;
-      background: #e7f5ff;
-      color: #0b7285;
-      margin-left: 6px;
-    }
-    .tabs {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 12px;
-      overflow-x: auto;
-    }
-    .tabs button {
-      flex: 1;
-      font-size: 14px;
-      padding: 8px;
-      background: #dee2e6;
-      color: #343a40;
-      white-space: nowrap;
-    }
-    .tabs button.active {
-      background: #0b7285;
-      color: white;
-    }
-    @media (min-width: 700px) {
-      .grid-2 {
-        display: grid;
-        grid-template-columns: 1.2fr 1fr;
-        gap: 12px;
-      }
-    }
-    .thumb {
-      max-width: 100%;
-      max-height: 150px;
-      display: block;
-      margin-top: 8px;
-      border-radius: 4px;
-    }
-    .row-inline {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .row-inline > div {
-      flex: 1;
-      min-width: 140px;
-    }
-    .backup-status {
-      font-size: 11px;
-      margin-top: 4px;
-      color: #495057;
-    }
-    .unit-label {
-      font-size: 12px;
-      margin-bottom: 4px;
-      color: #adb5bd;
-      text-align: right;
-    }
-    .info-small {
-      font-size: 12px;
-      color: #666;
-    }
-    .ok {
-      color: #2b8a3e;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    .erro {
-      color: #c92a2a;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    .extras-cera {
-      font-size: 13px;
-      margin-top: 4px;
-      margin-bottom: 4px;
-      display: none;
-    }
-    .extras-cera label {
-      font-weight: 400;
-    }
+    body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;background:#f5f5f5;}
+    header{background:#000;color:#fff;padding:8px 0 10px;text-align:center;}
+    .header-inner{display:flex;justify-content:center;align-items:center;}
+    .logo-favorito{max-width:260px;width:70%;height:auto;display:block;}
+    .container{max-width:900px;margin:0 auto;padding:12px;}
+    .card{background:#fff;border-radius:8px;padding:12px 16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+    label{font-size:14px;font-weight:500;}
+    input,select,button,textarea{font-size:16px;padding:6px 8px;margin:4px 0 8px;width:100%;box-sizing:border-box;}
+    textarea{min-height:60px;resize:vertical;}
+    button{cursor:pointer;border-radius:4px;border:none;background:#0b7285;color:#fff;font-weight:600;}
+    button.secondary{background:#868e96;}
+    ul{padding-left:20px;}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#e7f5ff;color:#0b7285;margin-left:6px;}
+    .tabs{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto;}
+    .tabs button{flex:1;font-size:14px;padding:8px;background:#dee2e6;color:#343a40;white-space:nowrap;}
+    .tabs button.active{background:#0b7285;color:#fff;}
+    @media(min-width:700px){.grid-2{display:grid;grid-template-columns:1.2fr 1fr;gap:12px;}}
+    .thumb{max-width:100%;max-height:150px;display:block;margin-top:8px;border-radius:4px;}
+    .row-inline{display:flex;gap:8px;flex-wrap:wrap;}
+    .row-inline>div{flex:1;min-width:140px;}
+    .backup-status{font-size:11px;margin-top:4px;color:#495057;}
+    .unit-label{font-size:12px;margin-bottom:4px;color:#adb5bd;text-align:right;}
+    .extras-cera{font-size:13px;margin-top:4px;margin-bottom:4px;display:none;}
+    .extras-cera label{font-weight:400;}
+    .small{font-size:12px;color:#666;}
+    .tag-cloud{display:inline-block;font-size:12px;color:#0b7285;background:#e7f5ff;border-radius:999px;padding:2px 8px;margin-left:6px;}
+    .hint-ok{font-size:12px;color:#2b8a3e;margin-top:-6px;margin-bottom:8px;}
+    .hint-warn{font-size:12px;color:#c92a2a;margin-top:-6px;margin-bottom:8px;}
+    .divider{height:1px;background:#e9ecef;margin:10px 0;}
   </style>
 </head>
 <body>
 <header>
   <div class="header-inner">
-    <!-- A LOGO: coloque o arquivo logo_favorito.png no mesmo repositório -->
     <img src="logo_favorito.png" alt="Favorito Lava Rápido" class="logo-favorito">
   </div>
 </header>
@@ -171,6 +51,7 @@
 <div class="container">
   <div class="unit-label">
     Unidade: <strong id="unit-label-text">UNIDADE_1</strong>
+    <span id="cloud-pill" class="tag-cloud" style="display:none;">Nuvem: ON</span>
   </div>
 
   <div class="card">
@@ -195,17 +76,17 @@
           <input id="placa-input" placeholder="ABC1234" />
 
           <button id="btn-abrir">Abrir comanda</button>
-
-          <div id="msg-abrir" style="font-size: 14px; margin-top: 8px; color: #2b8a3e;"></div>
+          <div id="msg-abrir" style="font-size:14px;margin-top:8px;color:#2b8a3e;"></div>
+          <div class="small">Dica: cadastre o cliente na aba “Clientes”.</div>
         </div>
         <div>
           <h2>Serviços cadastrados</h2>
-          <ul id="lista-servicos" style="font-size: 14px;"></ul>
+          <ul id="lista-servicos" style="font-size:14px;"></ul>
         </div>
       </div>
     </div>
 
-    <!-- COMANDAS EM ABERTO -->
+    <!-- ABERTAS -->
     <div id="view-abertas" style="display:none;">
       <h2>Comandas em aberto</h2>
       <div id="lista-abertas"></div>
@@ -215,6 +96,15 @@
     <!-- CLIENTES -->
     <div id="view-clientes" style="display:none;">
       <h2>Clientes</h2>
+
+      <!-- BUSCA -->
+      <label>Buscar cliente</label>
+      <input id="cliente-busca" placeholder="Digite nome, WhatsApp ou observação..." />
+      <div class="small">Filtra a lista na hora.</div>
+
+      <div class="divider"></div>
+
+      <h3>Cadastrar cliente</h3>
       <label>Nome do cliente / empresa</label>
       <input id="cliente-nome" placeholder="Ex.: João, Transportadora XYZ" />
 
@@ -224,25 +114,26 @@
       <label>Desconto (%)</label>
       <input id="cliente-desconto" type="number" step="0.01" placeholder="Ex.: 10 para 10%" />
 
-      <label>Observações (tipo de veículo, empresa, etc.)</label>
-      <textarea id="cliente-notas" placeholder="Ex.: Hilux prata, placa ABC1234; empresa com cobrança mensal"></textarea>
+      <label>Observações</label>
+      <textarea id="cliente-notas" placeholder="Ex.: Hilux prata; empresa com cobrança mensal"></textarea>
 
       <button id="btn-add-cliente">Cadastrar cliente</button>
 
       <h3>Lista de clientes</h3>
-      <ul id="lista-clientes" style="font-size: 14px;"></ul>
+      <div id="clientes-contagem" class="small"></div>
+      <ul id="lista-clientes" style="font-size:14px;"></ul>
     </div>
 
     <!-- SERVIÇOS -->
     <div id="view-servicos" style="display:none;">
       <h2>Serviços e valores</h2>
-      <p style="font-size: 14px;">
+      <p style="font-size:14px;">
         Altere os valores abaixo. Assim que salvar, os novos preços passam a ser usados nas comandas.
-        Os complementos de cera têm valores fixos: Cera líquida R$ 10,00 e Cera pasta R$ 20,00.
+        Complementos fixos: Cera líquida R$ 10,00 e Cera pasta R$ 20,00.
       </p>
       <div id="servicos-edicao"></div>
       <button id="btn-salvar-servicos">Salvar alterações</button>
-      <div id="msg-servicos" style="font-size: 14px; margin-top: 8px; color: #2b8a3e;"></div>
+      <div id="msg-servicos" style="font-size:14px;margin-top:8px;color:#2b8a3e;"></div>
     </div>
 
     <!-- CAIXA -->
@@ -299,26 +190,24 @@
     <!-- BACKUP -->
     <div id="view-backup" style="display:none;">
       <h2>Backup / Restauração</h2>
-      <p style="font-size: 14px;">
-        Este sistema pode enviar backups automáticos para o <strong>Firebase</strong> (quando configurado).
+      <p style="font-size:14px;">
+        Local: funciona sem internet. <br/>
+        Nuvem: quando Firebase estiver configurado, os dados ficam disponíveis em qualquer aparelho.
       </p>
-      <p style="font-size: 13px;">
-        Unidade atual: <strong id="unit-label-text-2">UNIDADE_1</strong>. Para outra unidade, basta trocar a constante <code>UNIT_ID</code> no código.
-      </p>
+      <div id="cloud-status" class="small"></div>
+
       <button id="btn-download-backup">Baixar backup (.json)</button>
-      <p style="margin-top: 12px; font-size: 14px;">
-        Para restaurar, escolha o arquivo de backup:
-      </p>
+      <p style="margin-top:12px;font-size:14px;">Para restaurar, escolha o arquivo:</p>
       <input type="file" id="input-backup" accept="application/json" />
-      <div id="msg-backup" style="font-size: 14px; margin-top: 8px;"></div>
+      <div id="msg-backup" style="font-size:14px;margin-top:8px;"></div>
       <div id="backup-status" class="backup-status"></div>
     </div>
   </div>
 </div>
 
 <script>
-  // ========= CONFIGURAÇÃO FIREBASE =========
-  // Preencha com seus dados se quiser backup em nuvem.
+  // ======= CONFIGURAÇÃO FIREBASE (PREPARADO PARA BANCO) =======
+  // Quando você preencher com os dados reais do Firebase, o sistema pode sincronizar.
   const firebaseConfig = {
     apiKey: "COLE_AQUI",
     authDomain: "COLE_AQUI.firebaseapp.com",
@@ -328,855 +217,749 @@
     appId: "COLE_AQUI"
   };
 
-  // ========= IDENTIFICAÇÃO DA UNIDADE =========
+  // ======= IDENTIFICAÇÃO DA UNIDADE =======
   const UNIT_ID = "UNIDADE_1";
 
   // IDs dos serviços de LAVADA que aceitam cera
-  const WASH_SERVICE_IDS = [1, 2, 3, 4, 5];
+  const WASH_SERVICE_IDS = [1,2,3,4,5];
   const CERA_LIQ_VALOR = 10;
   const CERA_PASTA_VALOR = 20;
 
+  // ======= BANCO (Firestore) =======
   let db = null;
-  let firebaseOk = false;
+  let cloudEnabled = false;
 
   try {
     if (firebaseConfig && firebaseConfig.apiKey !== "COLE_AQUI") {
       firebase.initializeApp(firebaseConfig);
       db = firebase.firestore();
-      firebaseOk = true;
-      console.log("Firebase inicializado.");
+      cloudEnabled = true;
+      document.getElementById('cloud-pill').style.display = 'inline-block';
+      document.getElementById('cloud-status').textContent = 'Nuvem: ATIVADA (Firestore).';
     } else {
-      console.warn("firebaseConfig ainda não preenchido.");
+      document.getElementById('cloud-status').textContent = 'Nuvem: DESATIVADA (usando só localStorage).';
     }
   } catch (e) {
-    console.error("Erro ao iniciar Firebase:", e);
+    console.error(e);
+    document.getElementById('cloud-status').textContent = 'Nuvem: erro ao iniciar Firebase (ficou no localStorage).';
+    cloudEnabled = false;
+    db = null;
   }
 
-  function setBackupStatus(msg) {
-    const el = document.getElementById('backup-status');
-    if (el) el.textContent = msg || '';
+  function setBackupStatus(msg){ const el=document.getElementById('backup-status'); if(el) el.textContent = msg||''; }
+
+  // ======= LOCAL STORAGE =======
+  const STORAGE_KEY = 'lavajatoFavoritoV9_preBanco';
+
+  function defaultState(){
+    return {
+      clients: [
+        { id: 1, name: 'Cliente Teste 1', whatsapp: '', discount: 0, notes: '' },
+        { id: 2, name: 'Empresa Exemplo Ltda.', whatsapp: '', discount: 0, notes: '' }
+      ],
+      services: [
+        { id: 1, name: 'Ducha carro pequeno', base_price: 30.00, pricing_type: 'unitario' },
+        { id: 2, name: 'Ducha carro grande', base_price: 50.00, pricing_type: 'unitario' },
+        { id: 3, name: 'Lavada completa carro pequeno', base_price: 50.00, pricing_type: 'unitario' },
+        { id: 4, name: 'Lavada completa carro grande', base_price: 60.00, pricing_type: 'unitario' },
+        { id: 5, name: 'Lavada caminhonete', base_price: 50.00, pricing_type: 'unitario' },
+        { id: 6, name: 'Martelinho (por amassado)', base_price: 80.00, pricing_type: 'por_amassado' },
+        { id: 7, name: 'Polimento farol (cada)', base_price: 40.00, pricing_type: 'unitario' },
+        { id: 8, name: 'Polimento pintura', base_price: 300.00, pricing_type: 'unitario' },
+        { id: 9, name: 'Higienização banco', base_price: 120.00, pricing_type: 'unitario' },
+        { id: 10, name: 'Lavagem de motor', base_price: 50.00, pricing_type: 'unitario' }
+      ],
+      orders: [],
+      expenses: [],
+      nextClientId: 3,
+      nextOrderId: 1,
+      nextExpenseId: 1
+    };
   }
 
-  const STORAGE_KEY = 'lavajatoFavoritoV8_semTanque';
-
-  function loadData() {
+  function loadLocal(){
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      const initial = {
-        clients: [
-          { id: 1, name: 'Cliente Teste 1', whatsapp: '', discount: 0, notes: '' },
-          { id: 2, name: 'Empresa Exemplo Ltda.', whatsapp: '', discount: 0, notes: '' }
-        ],
-        services: [
-          { id: 1, name: 'Ducha carro pequeno', base_price: 30.00, pricing_type: 'unitario' },
-          { id: 2, name: 'Ducha carro grande', base_price: 50.00, pricing_type: 'unitario' },
-          { id: 3, name: 'Lavada completa carro pequeno', base_price: 50.00, pricing_type: 'unitario' },
-          { id: 4, name: 'Lavada completa carro grande', base_price: 60.00, pricing_type: 'unitario' },
-          { id: 5, name: 'Lavada caminhonete', base_price: 50.00, pricing_type: 'unitario' },
-          { id: 6, name: 'Martelinho (por amassado)', base_price: 80.00, pricing_type: 'por_amassado' },
-          { id: 7, name: 'Polimento farol (cada)', base_price: 40.00, pricing_type: 'unitario' },
-          { id: 8, name: 'Polimento pintura', base_price: 300.00, pricing_type: 'unitario' },
-          { id: 9, name: 'Higienização banco', base_price: 120.00, pricing_type: 'unitario' },
-          { id: 10, name: 'Lavagem de motor', base_price: 50.00, pricing_type: 'unitario' }
-        ],
-        orders: [],
-        expenses: [],
-        nextClientId: 3,
-        nextOrderId: 1,
-        nextExpenseId: 1
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
-      return initial;
+    if(!raw){
+      const s = defaultState();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+      return s;
     }
-    try {
+    try{
       const data = JSON.parse(raw);
-      data.clients = (data.clients || []).map(c => Object.assign({ discount: 0, notes: '', whatsapp: '' }, c));
-      data.services = data.services || [];
-      data.orders = data.orders || [];
-      data.expenses = data.expenses || [];
-      data.nextClientId = data.nextClientId || (data.clients.length + 1);
+      data.clients = (data.clients||[]).map(c => Object.assign({discount:0,notes:'',whatsapp:''}, c));
+      data.services = data.services||[];
+      data.orders = data.orders||[];
+      data.expenses = data.expenses||[];
+      data.nextClientId = data.nextClientId || (data.clients.length+1);
       data.nextOrderId = data.nextOrderId || 1;
       data.nextExpenseId = data.nextExpenseId || 1;
       return data;
-    } catch (e) {
-      console.error('Erro ao ler storage, resetando.', e);
+    }catch(e){
       localStorage.removeItem(STORAGE_KEY);
-      return loadData();
+      const s = defaultState();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+      return s;
     }
   }
 
-  function backupToCloud(reason) {
-    if (!firebaseOk || !db) {
-      setBackupStatus('Backup em nuvem: configuração Firebase pendente.');
-      return;
+  function saveLocal(state){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  // ======= PREPARAÇÃO PARA BANCO (sem forçar agora) =======
+  // Estrutura pronta: /units/{UNIT_ID}/clients, services, orders, expenses
+  async function cloudSaveCollection(collectionName, items){
+    if(!cloudEnabled || !db) return;
+    try{
+      const batch = db.batch();
+      const col = db.collection('units').doc(UNIT_ID).collection(collectionName);
+      items.forEach(item=>{
+        const docRef = col.doc(String(item.id));
+        batch.set(docRef, item, { merge:true });
+      });
+      await batch.commit();
+      setBackupStatus('Sincronizado na nuvem: ' + collectionName);
+    }catch(e){
+      console.error(e);
+      setBackupStatus('Falha ao sincronizar na nuvem ('+collectionName+').');
     }
-    const snapshot = JSON.parse(JSON.stringify(state));
-    const ts = new Date().toISOString();
-    db.collection('lavajato_backups').add({
-      createdAt: ts,
-      reason: reason || 'auto',
-      unitId: UNIT_ID,
-      state: snapshot
-    }).then(() => {
-      setBackupStatus('Backup automático enviado (' + UNIT_ID + ') em ' + ts);
-    }).catch(err => {
-      console.error('Erro no backup em nuvem:', err);
-      setBackupStatus('Falha ao enviar backup em nuvem.');
-    });
   }
 
-  function saveData(data, reason) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    backupToCloud(reason || 'saveData');
+  async function cloudLoadAll(){
+    // Por enquanto, não forçamos trazer da nuvem para não “sumir” nada local.
+    // Depois que você quiser: a gente habilita um botão “IMPORTAR DA NUVEM”.
+    return;
   }
 
-  let state = loadData();
-
-  function formatMoney(v) {
-    return 'R$ ' + Number(v || 0).toFixed(2).replace('.', ',');
+  function saveData(reason){
+    saveLocal(state);
+    // sincroniza só o que mudou (bem simples por enquanto)
+    // (depois vamos granular: só clients quando editar clients, etc.)
+    if(cloudEnabled){
+      // leve: manda tudo
+      cloudSaveCollection('clients', state.clients);
+      cloudSaveCollection('services', state.services);
+      cloudSaveCollection('orders', state.orders);
+      cloudSaveCollection('expenses', state.expenses);
+    }
   }
 
-  // ---- CLIENTES ----
-  function renderClientesSelect() {
-    const sel = document.getElementById('cliente-select');
-    sel.innerHTML = '';
-    const optEmpty = document.createElement('option');
-    optEmpty.value = '';
-    optEmpty.textContent = 'Selecione um cliente';
+  let state = loadLocal();
+
+  function formatMoney(v){ return 'R$ ' + Number(v||0).toFixed(2).replace('.',','); }
+
+  // ======= CLIENTES (com busca) =======
+  function renderClientesSelect(){
+    const sel=document.getElementById('cliente-select');
+    sel.innerHTML='';
+    const optEmpty=document.createElement('option');
+    optEmpty.value='';
+    optEmpty.textContent='Selecione um cliente';
     sel.appendChild(optEmpty);
 
-    state.clients.forEach(function(c) {
-      const opt = document.createElement('option');
-      opt.value = c.id;
-      opt.textContent = c.name;
+    state.clients.forEach(c=>{
+      const opt=document.createElement('option');
+      opt.value=c.id;
+      opt.textContent=c.name;
       sel.appendChild(opt);
     });
   }
 
-  function renderClientesLista() {
-    const ul = document.getElementById('lista-clientes');
-    ul.innerHTML = '';
-    state.clients.forEach(function(c) {
-      const li = document.createElement('li');
-      let texto = c.name;
-      if (c.whatsapp) {
-        texto += ' - WhatsApp: ' + c.whatsapp;
-      }
-      if (c.discount) {
-        texto += ' - Desconto: ' + c.discount + '%';
-      }
-      if (c.notes) {
-        texto += ' - Obs.: ' + c.notes;
-      }
+  function clientMatch(c, q){
+    if(!q) return true;
+    q = q.toLowerCase();
+    const a = (c.name||'').toLowerCase();
+    const b = (c.whatsapp||'').toLowerCase();
+    const d = (c.notes||'').toLowerCase();
+    return a.includes(q) || b.includes(q) || d.includes(q);
+  }
+
+  function renderClientesLista(){
+    const ul=document.getElementById('lista-clientes');
+    const q=document.getElementById('cliente-busca')?.value?.trim() || '';
+    ul.innerHTML='';
+
+    const filtrados = state.clients.filter(c => clientMatch(c, q));
+    const total = state.clients.length;
+    document.getElementById('clientes-contagem').textContent =
+      'Mostrando ' + filtrados.length + ' de ' + total + ' clientes.';
+
+    filtrados.forEach(c=>{
+      const li=document.createElement('li');
+      let texto=c.name;
+      if(c.whatsapp) texto += ' - WhatsApp: ' + c.whatsapp;
+      if(c.discount) texto += ' - Desconto: ' + c.discount + '%';
+      if(c.notes) texto += ' - Obs.: ' + c.notes;
       li.textContent = texto;
       ul.appendChild(li);
     });
+
+    if(filtrados.length===0){
+      const li=document.createElement('li');
+      li.textContent='Nenhum cliente encontrado.';
+      ul.appendChild(li);
+    }
   }
 
-  // ---- SERVIÇOS ----
-  function renderServicosListaResumo() {
-    const ul = document.getElementById('lista-servicos');
-    ul.innerHTML = '';
-    state.services.forEach(function(s) {
-      const li = document.createElement('li');
+  // ======= SERVIÇOS =======
+  function renderServicosListaResumo(){
+    const ul=document.getElementById('lista-servicos');
+    ul.innerHTML='';
+    state.services.forEach(s=>{
+      const li=document.createElement('li');
       li.textContent = s.name + ' - ' + formatMoney(s.base_price);
-      if (s.pricing_type === 'por_amassado') {
-        const span = document.createElement('span');
-        span.className = 'pill';
-        span.textContent = 'por amassado';
+      if(s.pricing_type==='por_amassado'){
+        const span=document.createElement('span');
+        span.className='pill';
+        span.textContent='por amassado';
         li.appendChild(span);
       }
       ul.appendChild(li);
     });
   }
 
-  function renderServicosEdicao() {
-    const container = document.getElementById('servicos-edicao');
-    container.innerHTML = '';
-    state.services.forEach(function(s) {
-      const div = document.createElement('div');
-      div.style.marginBottom = '8px';
-      div.innerHTML =
-        '<label>' + s.name + '</label>' +
-        '<input type="number" step="0.01" data-servico-id="' + s.id + '" value="' + s.base_price + '" />';
+  function renderServicosEdicao(){
+    const container=document.getElementById('servicos-edicao');
+    container.innerHTML='';
+    state.services.forEach(s=>{
+      const div=document.createElement('div');
+      div.style.marginBottom='8px';
+      div.innerHTML = '<label>'+s.name+'</label>' +
+        '<input type="number" step="0.01" data-servico-id="'+s.id+'" value="'+s.base_price+'" />';
       container.appendChild(div);
     });
   }
 
-  // ---- COMANDAS EM ABERTO ----
-  function renderComandasAbertas() {
-    const div = document.getElementById('lista-abertas');
-    div.innerHTML = '';
-
-    const abertas = state.orders.filter(function(o) { return o.status === 'aberta'; });
-    if (abertas.length === 0) {
-      div.innerHTML = '<p>Nenhuma comanda em aberto.</p>';
-      document.getElementById('detalhe-comanda').innerHTML = '';
+  // ======= COMANDAS =======
+  function renderComandasAbertas(){
+    const div=document.getElementById('lista-abertas');
+    div.innerHTML='';
+    const abertas = state.orders.filter(o=>o.status==='aberta');
+    if(abertas.length===0){
+      div.innerHTML='<p>Nenhuma comanda em aberto.</p>';
+      document.getElementById('detalhe-comanda').innerHTML='';
       return;
     }
-
-    const ul = document.createElement('ul');
-    abertas.forEach(function(o) {
-      const li = document.createElement('li');
-      const cliente = state.clients.find(function(c) { return c.id === o.client_id; });
-      li.style.cursor = 'pointer';
-      li.style.padding = '4px 0';
-      li.textContent =
-        '#' + o.id + ' - ' +
-        (cliente ? cliente.name : 'Cliente ' + o.client_id) +
-        ' - Placa: ' + (o.plate || '-') +
-        ' - Total: ' + formatMoney(o.total);
-      li.onclick = function() { mostrarDetalheComanda(o.id); };
+    const ul=document.createElement('ul');
+    abertas.forEach(o=>{
+      const li=document.createElement('li');
+      const cliente=state.clients.find(c=>c.id===o.client_id);
+      li.style.cursor='pointer';
+      li.style.padding='4px 0';
+      li.textContent = '#'+o.id+' - '+(cliente?cliente.name:('Cliente '+o.client_id))+
+        ' - Placa: '+(o.plate||'-')+' - Total: '+formatMoney(o.total);
+      li.onclick=()=>mostrarDetalheComanda(o.id);
       ul.appendChild(li);
     });
-
     div.appendChild(ul);
   }
 
-  // ---- DETALHE DA COMANDA ----
-  function mostrarDetalheComanda(orderId) {
-    const o = state.orders.find(function(ord) { return ord.id === orderId; });
-    if (!o) return;
-    const cliente = state.clients.find(function(c) { return c.id === o.client_id; });
-    const div = document.getElementById('detalhe-comanda');
+  function mostrarDetalheComanda(orderId){
+    const o=state.orders.find(x=>x.id===orderId);
+    if(!o) return;
+    const cliente=state.clients.find(c=>c.id===o.client_id);
+    const div=document.getElementById('detalhe-comanda');
 
-    const itens = o.items || [];
-    let html = '';
-    html += '<h3>Comanda #' + o.id + '</h3>';
-    html += '<p><strong>Cliente:</strong> ' + (cliente ? cliente.name : 'Cliente ' + o.client_id) + '</p>';
-    if (cliente && cliente.whatsapp) {
-      html += '<p><strong>WhatsApp:</strong> ' + cliente.whatsapp + '</p>';
-    }
-    if (cliente && cliente.notes) {
-      html += '<p><strong>Obs. cliente:</strong> ' + cliente.notes + '</p>';
-    }
-    html += '<p><strong>Placa:</strong> ' + (o.plate || '-') + '</p>';
-    html += '<p><strong>Desconto do cliente:</strong> ' + (cliente && cliente.discount ? (cliente.discount + '%') : '0%') + '</p>';
-    html += '<p><strong>Status:</strong> ' + o.status + '</p>';
-    html += '<p><strong>Total:</strong> ' + formatMoney(o.total) + '</p>';
+    const itens=o.items||[];
+    let html='';
+    html+='<h3>Comanda #'+o.id+'</h3>';
+    html+='<p><strong>Cliente:</strong> '+(cliente?cliente.name:('Cliente '+o.client_id))+'</p>';
+    if(cliente && cliente.whatsapp) html+='<p><strong>WhatsApp:</strong> '+cliente.whatsapp+'</p>';
+    if(cliente && cliente.notes) html+='<p><strong>Obs. cliente:</strong> '+cliente.notes+'</p>';
+    html+='<p><strong>Placa:</strong> '+(o.plate||'-')+'</p>';
+    html+='<p><strong>Desconto do cliente:</strong> '+(cliente && cliente.discount ? (cliente.discount+'%') : '0%')+'</p>';
+    html+='<p><strong>Status:</strong> '+o.status+'</p>';
+    html+='<p><strong>Total:</strong> '+formatMoney(o.total)+'</p>';
 
-    html += '<h4>Itens</h4>';
-    if (itens.length === 0) {
-      html += '<p>Nenhum item ainda.</p>';
-    } else {
-      html += '<ul>';
-      itens.forEach(function(it) {
-        const s = state.services.find(function(se) { return se.id === it.service_id; });
-        let extrasTxt = '';
-        if (it.extras) {
-          const arr = [];
-          if (it.extras.cera_liquida) arr.push('cera líquida');
-          if (it.extras.cera_pasta) arr.push('cera pasta');
-          if (arr.length) extrasTxt = ' (Extras: ' + arr.join(', ') + ')';
+    html+='<h4>Itens</h4>';
+    if(itens.length===0){
+      html+='<p>Nenhum item ainda.</p>';
+    }else{
+      html+='<ul>';
+      itens.forEach(it=>{
+        const s=state.services.find(se=>se.id===it.service_id);
+        let extrasTxt='';
+        if(it.extras){
+          const arr=[];
+          if(it.extras.cera_liquida) arr.push('cera líquida');
+          if(it.extras.cera_pasta) arr.push('cera pasta');
+          if(arr.length) extrasTxt=' (Extras: '+arr.join(', ')+')';
         }
-        html += '<li>' +
-          (s ? s.name : 'Serviço ' + it.service_id) +
-          extrasTxt +
-          ' - Qtde: ' + it.quantity +
-          ' - Unit: ' + formatMoney(it.unit_price) +
-          ' - Total: ' + formatMoney(it.total) +
-          '</li>';
+        html+='<li>'+(s?s.name:('Serviço '+it.service_id))+extrasTxt+
+          ' - Qtde: '+it.quantity+
+          ' - Unit: '+formatMoney(it.unit_price)+
+          ' - Total: '+formatMoney(it.total)+'</li>';
       });
-      html += '</ul>';
+      html+='</ul>';
     }
 
-    html += '<h4>Foto do veículo</h4>';
-    html += '<input type="file" id="foto-veiculo" accept="image/*" capture="environment" />';
-    if (o.photoDataUrl) {
-      html += '<img src="' + o.photoDataUrl + '" class="thumb" alt="Foto do veículo" />';
+    html+='<h4>Foto do veículo</h4>';
+    html+='<input type="file" id="foto-veiculo" accept="image/*" capture="environment" />';
+    if(o.photoDataUrl) html+='<img src="'+o.photoDataUrl+'" class="thumb" alt="Foto do veículo" />';
+
+    if(o.status==='aberta'){
+      html+='<h4>Adicionar item</h4>';
+      html+='<label>Serviço</label><br/><select id="add-servico"></select><br/>';
+      html+='<label>Quantidade</label><br/><input id="add-qty" type="number" min="1" value="1"/><br/>';
+      html+='<label>Preço unitário</label><br/><input id="add-preco" type="number" step="0.01"/><br/>';
+      html+='<div id="extras-cera" class="extras-cera">';
+      html+='<label>Complementos (opcionais)</label><br/>';
+      html+='<label><input type="checkbox" id="extra-cera-liquida"/> Cera líquida (+ '+formatMoney(CERA_LIQ_VALOR)+')</label><br/>';
+      html+='<label><input type="checkbox" id="extra-cera-pasta"/> Cera pasta (+ '+formatMoney(CERA_PASTA_VALOR)+')</label><br/>';
+      html+='</div>';
+      html+='<button id="btn-add-item">Adicionar item</button>';
+      html+='<hr/>';
+      html+='<button class="secondary" id="btn-fechar-comanda">Fechar comanda</button> ';
+      html+='<button class="secondary" id="btn-cancelar-comanda" style="background:#c92a2a;">Cancelar comanda</button>';
+    }else{
+      html+='<hr/>';
+      html+='<button id="btn-whatsapp" class="secondary">Abrir WhatsApp com resumo</button> ';
+      html+='<button id="btn-cancelar-comanda-fechada" class="secondary" style="background:#c92a2a;">Cancelar comanda</button>';
     }
 
-    if (o.status === 'aberta') {
-      html += '<h4>Adicionar item</h4>';
-      html += '<label>Serviço</label><br />';
-      html += '<select id="add-servico"></select><br />';
-      html += '<label>Quantidade</label><br />';
-      html += '<input id="add-qty" type="number" min="1" value="1" /><br />';
-      html += '<label>Preço unitário</label><br />';
-      html += '<input id="add-preco" type="number" step="0.01" /><br />';
-      html += '<div id="extras-cera" class="extras-cera">';
-      html += '<label>Complementos (opcionais)</label><br />';
-      html += '<label><input type="checkbox" id="extra-cera-liquida" /> Cera líquida (+ ' + formatMoney(CERA_LIQ_VALOR) + ')</label><br />';
-      html += '<label><input type="checkbox" id="extra-cera-pasta" /> Cera pasta (+ ' + formatMoney(CERA_PASTA_VALOR) + ')</label><br />';
-      html += '</div>';
-      html += '<button id="btn-add-item">Adicionar item</button>';
-      html += '<hr />';
-      html += '<button class="secondary" id="btn-fechar-comanda">Fechar comanda</button> ';
-      html += '<button class="secondary" id="btn-cancelar-comanda" style="background:#c92a2a;">Cancelar comanda</button>';
-    } else {
-      html += '<hr />';
-      html += '<button id="btn-whatsapp" class="secondary">Abrir WhatsApp com resumo</button> ';
-      html += '<button id="btn-cancelar-comanda-fechada" class="secondary" style="background:#c92a2a;">Cancelar comanda</button>';
-    }
+    div.innerHTML=html;
 
-    div.innerHTML = html;
-
-    // Foto do veículo
-    var fotoInput = document.getElementById('foto-veiculo');
-    if (fotoInput) {
-      fotoInput.onchange = function(evt) {
-        var file = evt.target.files[0];
-        if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function(e) {
+    // foto
+    const fotoInput=document.getElementById('foto-veiculo');
+    if(fotoInput){
+      fotoInput.onchange=(evt)=>{
+        const file=evt.target.files[0];
+        if(!file) return;
+        const reader=new FileReader();
+        reader.onload=(e)=>{
           o.photoDataUrl = e.target.result;
-          saveData(state, 'foto-veiculo');
+          saveData('foto');
           mostrarDetalheComanda(orderId);
         };
         reader.readAsDataURL(file);
       };
     }
 
-    if (o.status === 'aberta') {
-      const selServ = document.getElementById('add-servico');
-      state.services.forEach(function(s) {
-        const opt = document.createElement('option');
-        opt.value = s.id;
-        opt.textContent = s.name + ' (' + formatMoney(s.base_price) + ')';
+    if(o.status==='aberta'){
+      const selServ=document.getElementById('add-servico');
+      state.services.forEach(s=>{
+        const opt=document.createElement('option');
+        opt.value=s.id;
+        opt.textContent=s.name+' ('+formatMoney(s.base_price)+')';
         selServ.appendChild(opt);
       });
 
-      const precoInput = document.getElementById('add-preco');
-      const qtyInput = document.getElementById('add-qty');
-      const extrasDiv = document.getElementById('extras-cera');
+      const precoInput=document.getElementById('add-preco');
+      const qtyInput=document.getElementById('add-qty');
+      const extrasDiv=document.getElementById('extras-cera');
 
-      function atualizarExtrasVisibilidade() {
-        const servId = Number(selServ.value);
-        const isLavada = WASH_SERVICE_IDS.indexOf(servId) !== -1;
-        if (isLavada) {
-          extrasDiv.style.display = 'block';
-        } else {
-          extrasDiv.style.display = 'none';
-          const chkL = document.getElementById('extra-cera-liquida');
-          const chkP = document.getElementById('extra-cera-pasta');
-          if (chkL) chkL.checked = false;
-          if (chkP) chkP.checked = false;
+      function atualizarExtras(){
+        const servId=Number(selServ.value);
+        const isLavada=WASH_SERVICE_IDS.includes(servId);
+        if(isLavada){
+          extrasDiv.style.display='block';
+        }else{
+          extrasDiv.style.display='none';
+          const chkL=document.getElementById('extra-cera-liquida');
+          const chkP=document.getElementById('extra-cera-pasta');
+          if(chkL) chkL.checked=false;
+          if(chkP) chkP.checked=false;
         }
       }
 
-      selServ.onchange = function() {
-        const servId = Number(selServ.value);
-        const servObj = state.services.find(function(s) { return s.id === servId; });
-        if (servObj) {
-          precoInput.value = servObj.base_price;
-        }
-        atualizarExtrasVisibilidade();
+      selServ.onchange=()=>{
+        const servId=Number(selServ.value);
+        const servObj=state.services.find(s=>s.id===servId);
+        if(servObj) precoInput.value=servObj.base_price;
+        atualizarExtras();
       };
 
-      if (state.services.length > 0) {
-        selServ.value = state.services[0].id;
+      if(state.services.length>0){
+        selServ.value=state.services[0].id;
         selServ.onchange();
       }
 
-      document.getElementById('btn-add-item').onclick = function() {
-        const servId = Number(selServ.value);
-        const qty = Number(qtyInput.value) || 1;
-        const preco = Number(precoInput.value);
+      document.getElementById('btn-add-item').onclick=()=>{
+        const servId=Number(selServ.value);
+        const qty=Number(qtyInput.value)||1;
+        const preco=Number(precoInput.value);
 
-        if (!servId || !preco) {
+        if(!servId || !preco){
           alert('Selecione o serviço e informe o preço.');
           return;
         }
 
         let precoComDesconto = preco;
-        if (cliente && cliente.discount && cliente.discount > 0) {
-          precoComDesconto = preco * (1 - (cliente.discount / 100));
+        if(cliente && cliente.discount && cliente.discount>0){
+          precoComDesconto = preco * (1 - (cliente.discount/100));
         }
 
-        const isLavada = WASH_SERVICE_IDS.indexOf(servId) !== -1;
-        let extrasValor = 0;
-        let extrasData = null;
+        const isLavada=WASH_SERVICE_IDS.includes(servId);
+        let extrasValor=0;
+        let extrasData=null;
 
-        if (isLavada) {
-          const chkL = document.getElementById('extra-cera-liquida');
-          const chkP = document.getElementById('extra-cera-pasta');
-          extrasData = {};
-          if (chkL && chkL.checked) {
-            extrasValor += CERA_LIQ_VALOR;
-            extrasData.cera_liquida = true;
-          }
-          if (chkP && chkP.checked) {
-            extrasValor += CERA_PASTA_VALOR;
-            extrasData.cera_pasta = true;
-          }
-          if (!extrasData.cera_liquida && !extrasData.cera_pasta) {
-            extrasData = null;
-          }
+        if(isLavada){
+          const chkL=document.getElementById('extra-cera-liquida');
+          const chkP=document.getElementById('extra-cera-pasta');
+          extrasData={};
+          if(chkL && chkL.checked){ extrasValor+=CERA_LIQ_VALOR; extrasData.cera_liquida=true; }
+          if(chkP && chkP.checked){ extrasValor+=CERA_PASTA_VALOR; extrasData.cera_pasta=true; }
+          if(!extrasData.cera_liquida && !extrasData.cera_pasta) extrasData=null;
         }
 
-        const unitarioFinal = precoComDesconto + extrasValor;
-        const total = qty * unitarioFinal;
+        const unitFinal = precoComDesconto + extrasValor;
+        const total = qty * unitFinal;
 
-        o.items = o.items || [];
-        o.items.push({
-          service_id: servId,
-          quantity: qty,
-          unit_price: unitarioFinal,
-          total: total,
-          extras: extrasData
-        });
-        o.total = (o.total || 0) + total;
-        saveData(state, 'add-item-comanda');
+        o.items=o.items||[];
+        o.items.push({service_id:servId,quantity:qty,unit_price:unitFinal,total:total,extras:extrasData});
+        o.total=(o.total||0)+total;
+
+        saveData('add-item');
         mostrarDetalheComanda(orderId);
         renderComandasAbertas();
       };
 
-      document.getElementById('btn-fechar-comanda').onclick = function() {
-        if (!confirm('Deseja fechar esta comanda?')) return;
-        o.status = 'fechada';
-        o.closed_at = new Date().toISOString();
-        saveData(state, 'fechar-comanda');
+      document.getElementById('btn-fechar-comanda').onclick=()=>{
+        if(!confirm('Deseja fechar esta comanda?')) return;
+        o.status='fechada';
+        o.closed_at=new Date().toISOString();
+        saveData('fechar');
         renderComandasAbertas();
         mostrarDetalheComanda(orderId);
       };
 
-      var btnCanc = document.getElementById('btn-cancelar-comanda');
-      if (btnCanc) {
-        btnCanc.onclick = function() {
-          if (!confirm('Cancelar esta comanda? Ela será ignorada nos relatórios.')) return;
-          o.status = 'cancelada';
-          saveData(state, 'cancelar-comanda-aberta');
-          renderComandasAbertas();
-          document.getElementById('detalhe-comanda').innerHTML = '';
-        };
-      }
-    } else {
-      var btnWhats = document.getElementById('btn-whatsapp');
-      if (btnWhats) {
-        btnWhats.onclick = function() {
-          if (!cliente || !cliente.whatsapp) {
-            alert('Cliente não tem WhatsApp cadastrado.');
-            return;
-          }
-          var numero = cliente.whatsapp.replace(/\D/g, '');
-          if (numero.length < 10) {
-            alert('WhatsApp inválido.');
-            return;
-          }
-          var linhas = [];
-          linhas.push('Comanda #' + o.id);
-          linhas.push('Cliente: ' + cliente.name);
-          if (o.plate) linhas.push('Placa: ' + o.plate);
-          linhas.push('Status: ' + o.status);
+      document.getElementById('btn-cancelar-comanda').onclick=()=>{
+        if(!confirm('Cancelar esta comanda? Ela será ignorada nos relatórios.')) return;
+        o.status='cancelada';
+        saveData('cancelar-aberta');
+        renderComandasAbertas();
+        document.getElementById('detalhe-comanda').innerHTML='';
+      };
+    }else{
+      const btnWhats=document.getElementById('btn-whatsapp');
+      if(btnWhats){
+        btnWhats.onclick=()=>{
+          if(!cliente || !cliente.whatsapp){ alert('Cliente não tem WhatsApp cadastrado.'); return; }
+          const numero = cliente.whatsapp.replace(/\D/g,'');
+          if(numero.length<10){ alert('WhatsApp inválido.'); return; }
+
+          const linhas=[];
+          linhas.push('Comanda #'+o.id);
+          linhas.push('Cliente: '+cliente.name);
+          if(o.plate) linhas.push('Placa: '+o.plate);
+          linhas.push('Status: '+o.status);
           linhas.push('--- Serviços ---');
-          (o.items || []).forEach(function(it) {
-            var s = state.services.find(function(se) { return se.id === it.service_id; });
-            var nomeServ = s ? s.name : ('Serviço ' + it.service_id);
-            var extrasParte = '';
-            if (it.extras) {
-              var arr = [];
-              if (it.extras.cera_liquida) arr.push('cera líquida');
-              if (it.extras.cera_pasta) arr.push('cera pasta');
-              if (arr.length) extrasParte = ' | Extras: ' + arr.join(', ');
+
+          (o.items||[]).forEach(it=>{
+            const s=state.services.find(se=>se.id===it.service_id);
+            const nomeServ=s?s.name:('Serviço '+it.service_id);
+            let extrasParte='';
+            if(it.extras){
+              const arr=[];
+              if(it.extras.cera_liquida) arr.push('cera líquida');
+              if(it.extras.cera_pasta) arr.push('cera pasta');
+              if(arr.length) extrasParte=' | Extras: '+arr.join(', ');
             }
-            linhas.push(
-              nomeServ +
-              extrasParte +
-              ' | Qtde: ' + it.quantity +
-              ' | Unit: ' + formatMoney(it.unit_price) +
-              ' | Total: ' + formatMoney(it.total)
-            );
+            linhas.push(nomeServ+extrasParte+' | Qtde: '+it.quantity+' | Unit: '+formatMoney(it.unit_price)+' | Total: '+formatMoney(it.total));
           });
+
           linhas.push('----------------');
-          linhas.push('Total da comanda: ' + formatMoney(o.total));
-          linhas.push('');
-          linhas.push('(Foto do veículo salva na comanda no sistema local.)');
+          linhas.push('Total da comanda: '+formatMoney(o.total));
+          linhas.push('(Foto do veículo salva no sistema.)');
 
-          var texto = encodeURIComponent(linhas.join('\n'));
-          var url = 'https://wa.me/' + numero + '?text=' + texto;
-          window.open(url, '_blank');
+          const texto=encodeURIComponent(linhas.join('\n'));
+          window.open('https://wa.me/'+numero+'?text='+texto,'_blank');
         };
       }
 
-      var btnCancFech = document.getElementById('btn-cancelar-comanda-fechada');
-      if (btnCancFech) {
-        btnCancFech.onclick = function() {
-          if (!confirm('Cancelar esta comanda fechada? Ela será ignorada nos relatórios.')) return;
-          o.status = 'cancelada';
-          saveData(state, 'cancelar-comanda-fechada');
+      const btnCanc=document.getElementById('btn-cancelar-comanda-fechada');
+      if(btnCanc){
+        btnCanc.onclick=()=>{
+          if(!confirm('Cancelar esta comanda fechada? Ela será ignorada nos relatórios.')) return;
+          o.status='cancelada';
+          saveData('cancelar-fechada');
           renderComandasAbertas();
-          document.getElementById('detalhe-comanda').innerHTML = '';
+          document.getElementById('detalhe-comanda').innerHTML='';
         };
       }
     }
   }
 
-  // ---- CAIXA ----
-  var despesaEditandoId = null;
+  // ======= CAIXA =======
+  function renderCaixaResumo(){
+    const mesInput=document.getElementById('caixa-mes');
+    if(!mesInput.value) return;
+    const [anoS, mesS]=mesInput.value.split('-');
+    const ano=parseInt(anoS,10), mes=parseInt(mesS,10);
 
-  function renderCaixaResumo() {
-    var mesInput = document.getElementById('caixa-mes');
-    if (!mesInput.value) return;
-    var parts = mesInput.value.split('-');
-    var ano = parseInt(parts[0], 10);
-    var mes = parseInt(parts[1], 10);
-
-    var receita = 0;
-    state.orders.forEach(function(o) {
-      if (o.status !== 'fechada') return;
-      var d = o.closed_at ? new Date(o.closed_at) : (o.created_at ? new Date(o.created_at) : null);
-      if (!d || isNaN(d.getTime())) return;
-      if (d.getFullYear() === ano && (d.getMonth() + 1) === mes) {
-        receita += (o.total || 0);
-      }
+    let receita=0;
+    state.orders.forEach(o=>{
+      if(o.status!=='fechada') return;
+      const d=o.closed_at?new Date(o.closed_at):(o.created_at?new Date(o.created_at):null);
+      if(!d || isNaN(d.getTime())) return;
+      if(d.getFullYear()===ano && (d.getMonth()+1)===mes) receita += (o.total||0);
     });
 
-    var despesasMes = [];
-    var totalDespesas = 0;
-    state.expenses.forEach(function(e) {
-      if (!e.date) return;
-      var d = new Date(e.date);
-      if (isNaN(d.getTime())) return;
-      if (d.getFullYear() === ano && (d.getMonth() + 1) === mes) {
+    let despesasMes=[];
+    let totalDespesas=0;
+    state.expenses.forEach(e=>{
+      if(!e.date) return;
+      const d=new Date(e.date);
+      if(isNaN(d.getTime())) return;
+      if(d.getFullYear()===ano && (d.getMonth()+1)===mes){
         despesasMes.push(e);
-        totalDespesas += (e.amount || 0);
+        totalDespesas += (e.amount||0);
       }
     });
 
-    var saldo = receita - totalDespesas;
+    const saldo = receita - totalDespesas;
 
-    var resumoDiv = document.getElementById('caixa-resumo');
-    resumoDiv.innerHTML =
-      '<p><strong>Receita de serviços:</strong> ' + formatMoney(receita) + '</p>' +
-      '<p><strong>Total de despesas:</strong> ' + formatMoney(totalDespesas) + '</p>' +
-      '<p><strong>Saldo:</strong> ' + formatMoney(saldo) + '</p>';
+    document.getElementById('caixa-resumo').innerHTML =
+      '<p><strong>Receita de serviços:</strong> '+formatMoney(receita)+'</p>'+
+      '<p><strong>Total de despesas:</strong> '+formatMoney(totalDespesas)+'</p>'+
+      '<p><strong>Saldo:</strong> '+formatMoney(saldo)+'</p>';
 
-    var despDiv = document.getElementById('caixa-despesas');
-    if (despesasMes.length === 0) {
-      despDiv.innerHTML = '<p>Não há despesas lançadas neste mês.</p>';
-    } else {
-      var html = '<ul>';
-      despesasMes.forEach(function(e) {
-        html += '<li>' +
-          e.date + ' - ' +
-          (e.category || '') + ' - ' +
-          (e.description || '') + ' - ' +
-          formatMoney(e.amount) +
-          ' <button type="button" onclick="editarDespesa(' + e.id + ')">Editar</button>' +
-          ' <button type="button" onclick="excluirDespesa(' + e.id + ')" style="background:#c92a2a;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:12px;">Excluir</button>' +
-          '</li>';
+    const despDiv=document.getElementById('caixa-despesas');
+    if(despesasMes.length===0){
+      despDiv.innerHTML='<p>Não há despesas lançadas neste mês.</p>';
+    }else{
+      let html='<ul>';
+      despesasMes.forEach(e=>{
+        html += '<li>'+e.date+' - '+(e.category||'')+' - '+(e.description||'')+' - '+formatMoney(e.amount)+'</li>';
       });
-      html += '</ul>';
-      despDiv.innerHTML = html;
+      html+='</ul>';
+      despDiv.innerHTML=html;
     }
   }
 
-  function renderCaixaPeriodo() {
-    var inicioStr = document.getElementById('periodo-inicio').value;
-    var fimStr = document.getElementById('periodo-fim').value;
-    var resumoDiv = document.getElementById('caixa-periodo-resumo');
-    var detalhesDiv = document.getElementById('caixa-periodo-detalhes');
-    resumoDiv.innerHTML = '';
-    detalhesDiv.innerHTML = '';
+  function renderCaixaPeriodo(){
+    const ini=document.getElementById('periodo-inicio').value;
+    const fim=document.getElementById('periodo-fim').value;
+    if(!ini || !fim){ alert('Informe a data inicial e a data final.'); return; }
 
-    if (!inicioStr || !fimStr) {
-      alert('Informe a data inicial e a data final.');
-      return;
-    }
+    const inicio=new Date(ini+'T00:00:00');
+    const final=new Date(fim+'T23:59:59');
+    if(isNaN(inicio.getTime()) || isNaN(final.getTime())){ alert('Datas inválidas.'); return; }
+    if(final<inicio){ alert('A data final não pode ser antes da inicial.'); return; }
 
-    var inicio = new Date(inicioStr + 'T00:00:00');
-    var fim = new Date(fimStr + 'T23:59:59');
-    if (isNaN(inicio.getTime()) || isNaN(fim.getTime())) {
-      alert('Datas inválidas.');
-      return;
-    }
-    if (fim < inicio) {
-      alert('A data final não pode ser antes da inicial.');
-      return;
-    }
+    let receita=0, despesas=0;
+    let listaComandas=[], listaDespesas=[];
 
-    var receita = 0;
-    var listaComandas = [];
-    state.orders.forEach(function(o) {
-      if (o.status !== 'fechada') return;
-      var d = o.closed_at ? new Date(o.closed_at) : (o.created_at ? new Date(o.created_at) : null);
-      if (!d || isNaN(d.getTime())) return;
-      if (d >= inicio && d <= fim) {
-        receita += (o.total || 0);
-        listaComandas.push(o);
-      }
+    state.orders.forEach(o=>{
+      if(o.status!=='fechada') return;
+      const d=o.closed_at?new Date(o.closed_at):(o.created_at?new Date(o.created_at):null);
+      if(!d || isNaN(d.getTime())) return;
+      if(d>=inicio && d<=final){ receita += (o.total||0); listaComandas.push(o); }
     });
 
-    var despesas = 0;
-    var listaDespesas = [];
-    state.expenses.forEach(function(e) {
-      if (!e.date) return;
-      var d = new Date(e.date + 'T00:00:00');
-      if (isNaN(d.getTime())) return;
-      if (d >= inicio && d <= fim) {
-        despesas += (e.amount || 0);
-        listaDespesas.push(e);
-      }
+    state.expenses.forEach(e=>{
+      if(!e.date) return;
+      const d=new Date(e.date+'T00:00:00');
+      if(isNaN(d.getTime())) return;
+      if(d>=inicio && d<=final){ despesas += (e.amount||0); listaDespesas.push(e); }
     });
 
-    var saldo = receita - despesas;
+    const saldo=receita-despesas;
 
-    resumoDiv.innerHTML =
-      '<p><strong>Receita de serviços no período:</strong> ' + formatMoney(receita) + '</p>' +
-      '<p><strong>Total de despesas no período:</strong> ' + formatMoney(despesas) + '</p>' +
-      '<p><strong>Saldo do período:</strong> ' + formatMoney(saldo) + '</p>';
+    document.getElementById('caixa-periodo-resumo').innerHTML =
+      '<p><strong>Receita de serviços no período:</strong> '+formatMoney(receita)+'</p>'+
+      '<p><strong>Total de despesas no período:</strong> '+formatMoney(despesas)+'</p>'+
+      '<p><strong>Saldo do período:</strong> '+formatMoney(saldo)+'</p>';
 
-    var htmlDet = '';
-    if (listaComandas.length === 0) {
-      htmlDet += '<p>Não há comandas fechadas neste período.</p>';
-    } else {
-      htmlDet += '<h4>Comandas</h4><ul>';
-      listaComandas.forEach(function(o) {
-        var cliente = state.clients.find(function(c) { return c.id === o.client_id; });
-        var nomeCliente = cliente ? cliente.name : ('Cliente ' + o.client_id);
-        var dataTxt = o.closed_at ? o.closed_at.substring(0,10) : (o.created_at ? o.created_at.substring(0,10) : '');
-        htmlDet += '<li>#' + o.id + ' - ' + nomeCliente +
-          ' - Data: ' + dataTxt +
-          ' - Total: ' + formatMoney(o.total || 0) + '</li>';
+    let htmlDet='';
+    if(listaComandas.length){
+      htmlDet+='<h4>Comandas</h4><ul>';
+      listaComandas.forEach(o=>{
+        const c=state.clients.find(x=>x.id===o.client_id);
+        const nome=c?c.name:('Cliente '+o.client_id);
+        const dt=o.closed_at?o.closed_at.substring(0,10):(o.created_at?o.created_at.substring(0,10):'');
+        htmlDet+='<li>#'+o.id+' - '+nome+' - Data: '+dt+' - Total: '+formatMoney(o.total||0)+'</li>';
       });
-      htmlDet += '</ul>';
+      htmlDet+='</ul>';
+    }else{
+      htmlDet+='<p>Não há comandas fechadas neste período.</p>';
     }
 
-    if (listaDespesas.length === 0) {
-      htmlDet += '<p>Não há despesas neste período.</p>';
-    } else {
-      htmlDet += '<h4>Despesas</h4><ul>';
-      listaDespesas.forEach(function(e) {
-        htmlDet += '<li>' + e.date + ' - ' +
-          (e.category || '') + ' - ' +
-          (e.description || '') + ' - ' +
-          formatMoney(e.amount || 0) + '</li>';
+    if(listaDespesas.length){
+      htmlDet+='<h4>Despesas</h4><ul>';
+      listaDespesas.forEach(e=>{
+        htmlDet+='<li>'+e.date+' - '+(e.category||'')+' - '+(e.description||'')+' - '+formatMoney(e.amount||0)+'</li>';
       });
-      htmlDet += '</ul>';
+      htmlDet+='</ul>';
+    }else{
+      htmlDet+='<p>Não há despesas neste período.</p>';
     }
 
-    detalhesDiv.innerHTML = htmlDet;
+    document.getElementById('caixa-periodo-detalhes').innerHTML=htmlDet;
   }
 
-  function editarDespesa(id) {
-    var e = state.expenses.find(function(d) { return d.id === id; });
-    if (!e) return;
-    despesaEditandoId = id;
-    document.getElementById('despesa-data').value = e.date || '';
-    document.getElementById('despesa-categoria').value = e.category || '';
-    document.getElementById('despesa-descricao').value = e.description || '';
-    document.getElementById('despesa-valor').value = e.amount || '';
-    alert('Editando despesa #' + id + '. Ao salvar, ela será atualizada.');
+  // ======= TABS =======
+  function showView(view){
+    ['comanda','abertas','clientes','servicos','caixa','backup'].forEach(v=>{
+      document.getElementById('view-'+v).style.display='none';
+      document.getElementById('tab-'+v).classList.remove('active');
+    });
+    document.getElementById('view-'+view).style.display='block';
+    document.getElementById('tab-'+view).classList.add('active');
+
+    if(view==='abertas') renderComandasAbertas();
+    if(view==='caixa') renderCaixaResumo();
+    if(view==='clientes') renderClientesLista();
   }
 
-  function excluirDespesa(id) {
-    if (!confirm('Deseja realmente excluir esta despesa?')) return;
-    state.expenses = state.expenses.filter(function(d) { return d.id !== id; });
-    saveData(state, 'excluir-despesa');
-    renderCaixaResumo();
-  }
+  // ======= EVENTOS =======
+  document.getElementById('tab-comanda').onclick=()=>showView('comanda');
+  document.getElementById('tab-abertas').onclick=()=>showView('abertas');
+  document.getElementById('tab-clientes').onclick=()=>showView('clientes');
+  document.getElementById('tab-servicos').onclick=()=>showView('servicos');
+  document.getElementById('tab-caixa').onclick=()=>showView('caixa');
+  document.getElementById('tab-backup').onclick=()=>showView('backup');
 
-  // ---- TABS ----
-  function showView(view) {
-    document.getElementById('view-comanda').style.display = 'none';
-    document.getElementById('view-abertas').style.display = 'none';
-    document.getElementById('view-clientes').style.display = 'none';
-    document.getElementById('view-servicos').style.display = 'none';
-    document.getElementById('view-caixa').style.display = 'none';
-    document.getElementById('view-backup').style.display = 'none';
+  document.getElementById('btn-periodo').onclick=renderCaixaPeriodo;
 
-    document.getElementById('view-' + view).style.display = 'block';
-
-    document.getElementById('tab-comanda').classList.remove('active');
-    document.getElementById('tab-abertas').classList.remove('active');
-    document.getElementById('tab-clientes').classList.remove('active');
-    document.getElementById('tab-servicos').classList.remove('active');
-    document.getElementById('tab-caixa').classList.remove('active');
-    document.getElementById('tab-backup').classList.remove('active');
-
-    document.getElementById('tab-' + view).classList.add('active');
-
-    if (view === 'abertas') {
-      renderComandasAbertas();
-    }
-    if (view === 'caixa') {
-      renderCaixaResumo();
-    }
-  }
-
-  // ---- EVENTOS GERAIS ----
-  document.getElementById('tab-comanda').onclick = function() { showView('comanda'); };
-  document.getElementById('tab-abertas').onclick = function() { showView('abertas'); };
-  document.getElementById('tab-clientes').onclick = function() { showView('clientes'); };
-  document.getElementById('tab-servicos').onclick = function() { showView('servicos'); };
-  document.getElementById('tab-caixa').onclick = function() { showView('caixa'); };
-  document.getElementById('tab-backup').onclick = function() { showView('backup'); };
-  document.getElementById('btn-periodo').onclick = renderCaixaPeriodo;
+  // Busca de cliente (ao digitar)
+  document.getElementById('cliente-busca').addEventListener('input', renderClientesLista);
 
   // Abrir comanda
-  document.getElementById('btn-abrir').onclick = function() {
-    const clienteId = Number(document.getElementById('cliente-select').value);
-    const placa = document.getElementById('placa-input').value.trim().toUpperCase();
-    const msg = document.getElementById('msg-abrir');
+  document.getElementById('btn-abrir').onclick=()=>{
+    const clienteId=Number(document.getElementById('cliente-select').value);
+    const placa=document.getElementById('placa-input').value.trim().toUpperCase();
+    const msg=document.getElementById('msg-abrir');
 
-    if (!clienteId) {
-      alert('Selecione um cliente');
-      return;
-    }
+    if(!clienteId){ alert('Selecione um cliente'); return; }
 
-    const newOrder = {
+    const newOrder={
       id: state.nextOrderId++,
       client_id: clienteId,
       plate: placa || null,
-      status: 'aberta',
-      total: 0,
-      items: [],
-      created_at: new Date().toISOString(),
-      photoDataUrl: null
+      status:'aberta',
+      total:0,
+      items:[],
+      created_at:new Date().toISOString(),
+      photoDataUrl:null
     };
 
     state.orders.push(newOrder);
-    saveData(state, 'abrir-comanda');
+    saveData('abrir-comanda');
     renderComandasAbertas();
-    msg.textContent = 'Comanda #' + newOrder.id + ' aberta com sucesso.';
-    setTimeout(function() { msg.textContent = ''; }, 3000);
-    document.getElementById('placa-input').value = '';
+    msg.textContent='Comanda #'+newOrder.id+' aberta com sucesso.';
+    setTimeout(()=>msg.textContent='',3000);
+    document.getElementById('placa-input').value='';
   };
 
   // Cadastrar cliente
-  document.getElementById('btn-add-cliente').onclick = function() {
-    const nomeInput = document.getElementById('cliente-nome');
-    const whatsappInput = document.getElementById('cliente-whatsapp');
-    const descontoInput = document.getElementById('cliente-desconto');
-    const notasInput = document.getElementById('cliente-notas');
+  document.getElementById('btn-add-cliente').onclick=()=>{
+    const nome=document.getElementById('cliente-nome').value.trim();
+    const whatsapp=document.getElementById('cliente-whatsapp').value.trim();
+    const desconto=Number(document.getElementById('cliente-desconto').value)||0;
+    const notas=document.getElementById('cliente-notas').value.trim();
 
-    const nome = nomeInput.value.trim();
-    const whatsapp = whatsappInput.value.trim();
-    const desconto = Number(descontoInput.value) || 0;
-    const notas = notasInput.value.trim();
+    if(!nome){ alert('Informe o nome do cliente'); return; }
 
-    if (!nome) {
-      alert('Informe o nome do cliente');
-      return;
-    }
-    const novo = {
+    state.clients.push({
       id: state.nextClientId++,
-      name: nome,
-      whatsapp: whatsapp,
-      discount: desconto,
-      notes: notas
-    };
-    state.clients.push(novo);
-    saveData(state, 'novo-cliente');
-    nomeInput.value = '';
-    whatsappInput.value = '';
-    descontoInput.value = '';
-    notasInput.value = '';
+      name:nome,
+      whatsapp:whatsapp,
+      discount:desconto,
+      notes:notas
+    });
+
+    document.getElementById('cliente-nome').value='';
+    document.getElementById('cliente-whatsapp').value='';
+    document.getElementById('cliente-desconto').value='';
+    document.getElementById('cliente-notas').value='';
+    document.getElementById('cliente-busca').value='';
+
+    saveData('novo-cliente');
     renderClientesSelect();
     renderClientesLista();
   };
 
-  // Salvar serviços editados
-  document.getElementById('btn-salvar-servicos').onclick = function() {
-    const container = document.getElementById('servicos-edicao');
-    const inputs = container.querySelectorAll('input[data-servico-id]');
-    inputs.forEach(function(input) {
-      const id = Number(input.getAttribute('data-servico-id'));
-      const valor = Number(input.value);
-      const serv = state.services.find(function(s) { return s.id === id; });
-      if (serv && !isNaN(valor) && valor >= 0) {
-        serv.base_price = valor;
-      }
+  // Salvar serviços
+  document.getElementById('btn-salvar-servicos').onclick=()=>{
+    const container=document.getElementById('servicos-edicao');
+    const inputs=container.querySelectorAll('input[data-servico-id]');
+    inputs.forEach(inp=>{
+      const id=Number(inp.getAttribute('data-servico-id'));
+      const valor=Number(inp.value);
+      const s=state.services.find(x=>x.id===id);
+      if(s && !isNaN(valor) && valor>=0) s.base_price=valor;
     });
-    saveData(state, 'editar-servicos');
+
+    saveData('editar-servicos');
     renderServicosListaResumo();
-    document.getElementById('msg-servicos').textContent = 'Valores atualizados com sucesso.';
-    setTimeout(function() {
-      document.getElementById('msg-servicos').textContent = '';
-    }, 3000);
+    document.getElementById('msg-servicos').textContent='Valores atualizados com sucesso.';
+    setTimeout(()=>document.getElementById('msg-servicos').textContent='',3000);
   };
 
-  // Lançar / salvar despesa
-  document.getElementById('btn-add-despesa').onclick = function() {
-    var data = document.getElementById('despesa-data').value;
-    var categoria = document.getElementById('despesa-categoria').value.trim();
-    var descricao = document.getElementById('despesa-descricao').value.trim();
-    var valor = Number(document.getElementById('despesa-valor').value);
+  // Despesa
+  document.getElementById('btn-add-despesa').onclick=()=>{
+    const data=document.getElementById('despesa-data').value;
+    const categoria=document.getElementById('despesa-categoria').value.trim();
+    const descricao=document.getElementById('despesa-descricao').value.trim();
+    const valor=Number(document.getElementById('despesa-valor').value);
 
-    if (!data || !valor) {
-      alert('Informe a data e o valor da despesa.');
-      return;
-    }
+    if(!data || !valor){ alert('Informe a data e o valor da despesa.'); return; }
 
-    if (despesaEditandoId) {
-      var e = state.expenses.find(function(d) { return d.id === despesaEditandoId; });
-      if (e) {
-        e.date = data;
-        e.category = categoria;
-        e.description = descricao;
-        e.amount = valor;
-      }
-      despesaEditandoId = null;
-    } else {
-      var nova = {
-        id: state.nextExpenseId++,
-        date: data,
-        category: categoria,
-        description: descricao,
-        amount: valor
-      };
-      state.expenses.push(nova);
-    }
+    state.expenses.push({
+      id: state.nextExpenseId++,
+      date:data,
+      category:categoria,
+      description:descricao,
+      amount:valor
+    });
 
-    saveData(state, 'lancar-despesa');
+    document.getElementById('despesa-data').value='';
+    document.getElementById('despesa-categoria').value='';
+    document.getElementById('despesa-descricao').value='';
+    document.getElementById('despesa-valor').value='';
 
-    document.getElementById('despesa-data').value = '';
-    document.getElementById('despesa-categoria').value = '';
-    document.getElementById('despesa-descricao').value = '';
-    document.getElementById('despesa-valor').value = '';
-
+    saveData('lancar-despesa');
     renderCaixaResumo();
   };
 
   // Backup download
-  document.getElementById('btn-download-backup').onclick = function() {
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'lavajato-favorito-' + UNIT_ID + '.json';
+  document.getElementById('btn-download-backup').onclick=()=>{
+    const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='lavajato-favorito-'+UNIT_ID+'.json';
     a.click();
     URL.revokeObjectURL(url);
   };
 
   // Backup restore
-  document.getElementById('input-backup').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      try {
-        const json = JSON.parse(event.target.result);
-        if (!json.clients || !json.services || !json.orders || !json.expenses) {
-          throw new Error('Formato inválido');
-        }
-        state = json;
-        saveData(state, 'restore-backup');
+  document.getElementById('input-backup').addEventListener('change',(e)=>{
+    const file=e.target.files[0];
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=(event)=>{
+      try{
+        const json=JSON.parse(event.target.result);
+        if(!json.clients || !json.services || !json.orders || !json.expenses) throw new Error('Formato inválido');
+        state=json;
+        saveData('restore-backup');
         renderClientesSelect();
         renderClientesLista();
         renderServicosListaResumo();
         renderServicosEdicao();
         renderComandasAbertas();
         renderCaixaResumo();
-        document.getElementById('msg-backup').textContent = 'Backup restaurado com sucesso.';
-      } catch (err) {
-        console.error(err);
+        document.getElementById('msg-backup').textContent='Backup restaurado com sucesso.';
+      }catch(err){
         alert('Arquivo de backup inválido.');
       }
     };
     reader.readAsText(file);
   });
 
-  function setMesAtualNoCaixa() {
-    var hoje = new Date();
-    var ano = hoje.getFullYear();
-    var mes = String(hoje.getMonth() + 1).padStart(2, '0');
-    var mesInput = document.getElementById('caixa-mes');
-    mesInput.value = ano + '-' + mes;
-    mesInput.onchange = renderCaixaResumo;
+  function setMesAtualNoCaixa(){
+    const hoje=new Date();
+    const ano=hoje.getFullYear();
+    const mes=String(hoje.getMonth()+1).padStart(2,'0');
+    const mesInput=document.getElementById('caixa-mes');
+    mesInput.value=ano+'-'+mes;
+    mesInput.onchange=renderCaixaResumo;
   }
 
-  // Inicialização
+  // ======= INIT =======
+  document.getElementById('unit-label-text').textContent=UNIT_ID;
   renderClientesSelect();
   renderClientesLista();
   renderServicosListaResumo();
@@ -1184,9 +967,7 @@
   renderComandasAbertas();
   setMesAtualNoCaixa();
 
-  // Atualiza label de unidade
-  document.getElementById('unit-label-text').textContent = UNIT_ID;
-  document.getElementById('unit-label-text-2').textContent = UNIT_ID;
+  // (futuro) cloudLoadAll()
 </script>
 </body>
 </html>
