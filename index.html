@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>LAVA JATO FAVORITO</title>
+  <title>LAVA RÁPIDO FAVORITO</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- OCR (Tesseract.js) - gratuito via CDN -->
@@ -16,8 +16,15 @@
     }
     *{box-sizing:border-box}
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--text)}
-    header{background:#000;padding:10px 0;text-align:center}
-    .banner{width:min(980px,96%);height:auto;border-radius:14px;display:block;margin:0 auto;box-shadow:0 8px 20px rgba(0,0,0,.35);background:#000}
+    header{background:#000;padding:14px 0;text-align:center}
+    .title{
+      color:#fff;
+      font-weight:1000;
+      letter-spacing:1px;
+      font-size:20px;
+      text-transform:uppercase;
+    }
+
     .container{max-width:980px;margin:0 auto;padding:12px}
     .card{background:var(--card);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;box-shadow:var(--shadow)}
     .tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px;padding-bottom:2px}
@@ -54,9 +61,7 @@
 <body>
 
 <header>
-  <!-- Banner embutido (não depende do Pages achar arquivo) -->
-  <img class="banner" alt="Favorito Lava Rápido"
-       src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIbGNtcwIQAABtbnRyUkdCIFhZWiAH4QABAAkABgAPAAcAAGFjc3AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLWxjbXMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANaHRyYwAAAAA4AAAAVgBzY2FsAAAAAQAAAEQAAABkZGVzYwAAAHEAAAB2Y3BydAAAAPgAAAAyZ3RyYwAAASwAAABUZ3J5cwAAAYAAAABUY2hhZAAAAZQAAAAsY3Z0cgAAAbAAAAA4bHVtYQAAAdgAAAAkY3Z0cgAAAhwAAAA4dmlldwAAAmQAAAAiYXJ0cwAAAoYAAAA2bWVhcwAAArwAAAAyZGVzYwAAAvAAAAA2dGV4dAAAAMYAAAAOAAAAABQbGluawAAANQAAAAsbW1vZAAAAPAAAAA2Y2hhZAAAAxgAAAAsY3BydAAAANwAAAAyAAAAAFoAAAABAAAAAQAAABwAAAABAAAAAQAAABwAAAABAAAAAQAAABwAAABMYXZnIGphdG8gZmF2b3JpdG8gLSBiYW5uZXIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/bAEMABQYFBQYGBQYGBgYIBwcHBwYJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/bAEMBBgcHCAkJDBQMDBQyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAA0AZADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD6YooooA8/8Xf4v8A2v8A0a7fT9S+M8d7q0VnqNzqF7dXv2a1mXz0t2VYw0oYk8Sx2zA3zj2qv8A4mH4b/6lT/8A6pE//wBKqv8A4mH4b/6lT/8A6pE//wBKq8v8T/8A5mL/ALJf/wBfH/6l6q0vW7m7VtR0m1t7K2i0q5uY7aK0kW3kD4n8QKqM7cM+9Vf8AjYfhv/qVP/8AqkT/AP0qrj/xMPw3/wBSr/8A6pE//wBKq8/8T/8A5mL/ALJf/wBfH/6l6oA9YooooA8/8Xf4v8A2v8A0a7fT9S+M8d7q0VnqNzqF7dXv2a1mXz0t2VYw0oYk8Sx2zA3zj2qv8A4mH4b/6lT/8A6pE//wBKqv8A4mH4b/6lT/8A6pE//wBKq8v8T/8A5mL/ALJf/wBfH/6l6q0vW7m7VtR0m1t7K2i0q5uY7aK0kW3kD4n8QKqM7cM+9Vf8AjYfhv/qVP/8AqkT/AP0qrj/xMPw3/wBSr/8A6pE//wBKq8/8T/8A5mL/ALJf/wBfH/6l6oA9YooooA//2Q==">
+  <div class="title">LAVA RÁPIDO FAVORITO</div>
 </header>
 
 <div class="container">
@@ -230,7 +235,7 @@
 /***********************
  *  ESTADO / STORAGE
  ************************/
-const STORAGE_KEY = "lavajato_favorito_v11_foto_ocr";
+const STORAGE_KEY = "lavajato_favorito_v11_foto_ocr_sem_logo";
 const WASH_SERVICE_IDS = [1,2,3,4,5]; // aceitam cera
 const CERA_LIQ = 10;
 const CERA_PASTA = 20;
@@ -397,39 +402,23 @@ el("btn-limpar-foto").addEventListener("click", ()=>{
 });
 
 function normalizePlateText(text){
-  // troca caracteres comuns confundidos
-  // O/0, I/1, S/5, B/8, Z/2
-  const map = {
-    "O":"0","Q":"0","D":"0",
-    "I":"1","L":"1","|":"1",
-    "S":"5",
-    "B":"8",
-    "Z":"2"
-  };
+  const map = { "O":"0","Q":"0","D":"0","I":"1","L":"1","|":"1","S":"5","B":"8","Z":"2" };
   let t = text.toUpperCase();
-  t = t.replace(/[^A-Z0-9]/g, ""); // só letras e números
-  // mantém também uma versão sem substituir, mas tentamos depois
+  t = t.replace(/[^A-Z0-9]/g, "");
   return t.split("").map(ch => map[ch] ?? ch).join("");
 }
 
 function findBrazilPlateCandidates(raw){
   const t = raw.toUpperCase();
-  // Captura padrões possíveis em texto "sujo"
-  // Antigo: ABC1234 (7)
-  // Mercosul: ABC1D23 (7)
   const cleaned = t.replace(/[^A-Z0-9]/g,"");
   const candidates = new Set();
 
-  // varre janelas de 7 caracteres
   for(let i=0;i<=cleaned.length-7;i++){
     const s = cleaned.slice(i,i+7);
-    // antigo
     if(/^[A-Z]{3}[0-9]{4}$/.test(s)) candidates.add(s);
-    // mercosul
     if(/^[A-Z]{3}[0-9][A-Z][0-9]{2}$/.test(s)) candidates.add(s);
   }
 
-  // também tenta com versão "normalizada" (O->0 etc.)
   const norm = normalizePlateText(t);
   for(let i=0;i<=norm.length-7;i++){
     const s = norm.slice(i,i+7);
@@ -453,13 +442,10 @@ async function runPlateOCR(){
   try{
     const { data } = await Tesseract.recognize(
       aberturaFotoDataUrl,
-      "eng", // letras e números
+      "eng",
       {
         logger: (m) => {
-          // progresso
-          if(m.status){
-            el("ocr-status").textContent = `OCR: ${m.status}`;
-          }
+          if(m.status) el("ocr-status").textContent = `OCR: ${m.status}`;
           if(typeof m.progress === "number"){
             el("ocr-bar").style.width = `${Math.round(m.progress*100)}%`;
           }
@@ -476,7 +462,6 @@ async function runPlateOCR(){
       return;
     }
 
-    // Se tiver várias, pega a primeira (pode trocar manualmente no campo)
     const plate = candidates[0];
     el("placa-input").value = plate;
     el("ocr-status").innerHTML = `Placa encontrada: <b class="mono">${plate}</b> (se estiver errada, corrija no campo).`;
@@ -506,13 +491,12 @@ el("btn-abrir").addEventListener("click", ()=>{
     closed_at: "",
     plate: plate || "",
     whatsapp: whatsapp || "",
-    openPhotoDataUrl: aberturaFotoDataUrl, // FOTO DE ABERTURA
-    closePhotoDataUrl: "",                // FOTO FINAL (opcional)
+    openPhotoDataUrl: aberturaFotoDataUrl,
+    closePhotoDataUrl: "",
     items: [],
     total: 0
   });
 
-  // limpa campos de abertura
   aberturaFotoDataUrl = "";
   fotoInput.value = "";
   fotoPreview.style.display = "none";
@@ -647,7 +631,6 @@ function renderOrderDetail(orderId){
 
   box.innerHTML = html;
 
-  // foto final
   const fotoFinal = document.getElementById("foto-final");
   fotoFinal.addEventListener("change", (ev)=>{
     const file = ev.target.files?.[0];
@@ -751,7 +734,7 @@ function renderOrderDetail(orderId){
       if(numero.length < 10){ alert("Sem WhatsApp válido nessa comanda."); return; }
 
       const linhas = [];
-      linhas.push(`FAVORITO LAVA RÁPIDO`);
+      linhas.push(`LAVA RÁPIDO FAVORITO`);
       linhas.push(`Comanda #${o.id}`);
       if(o.plate) linhas.push(`Placa: ${o.plate}`);
       linhas.push(`--- Serviços ---`);
@@ -767,7 +750,6 @@ function renderOrderDetail(orderId){
 
       linhas.push(`----------------`);
       linhas.push(`Total: ${fmtMoney(o.total)}`);
-      linhas.push(`Foto abertura e final ficam no sistema.`);
 
       const texto = encodeURIComponent(linhas.join("\n"));
       window.open(`https://wa.me/${numero}?text=${texto}`, "_blank");
@@ -973,7 +955,7 @@ el("btn-download-backup").addEventListener("click", ()=>{
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href=url;
-  a.download="backup_lavajato_favorito.json";
+  a.download="backup_lava_rapido_favorito.json";
   a.click();
   URL.revokeObjectURL(url);
 });
