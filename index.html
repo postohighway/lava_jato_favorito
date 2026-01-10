@@ -51,9 +51,6 @@
     .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
     .progress{height:10px;background:#e9ecef;border-radius:999px;overflow:hidden;margin-top:8px}
     .progress > div{height:100%;width:0%;background:var(--primary)}
-
-    /* Área oculta para impressão */
-    #printArea{ display:none; }
   </style>
 </head>
 <body>
@@ -229,14 +226,11 @@
   </div>
 </div>
 
-<!-- PRINT AREA -->
-<div id="printArea"></div>
-
 <script>
 /***********************
  *  ESTADO / STORAGE
  ************************/
-const STORAGE_KEY = "lava_rapido_favorito_v12_print";
+const STORAGE_KEY = "lava_rapido_favorito_v12_print_fix";
 const WASH_SERVICE_IDS = [1,2,3,4,5]; // aceitam cera
 const CERA_LIQ = 10;
 const CERA_PASTA = 20;
@@ -645,10 +639,8 @@ function renderOrderDetail(orderId){
 
   box.innerHTML = html;
 
-  // imprimir
   document.getElementById("btn-print").addEventListener("click", ()=>printTwoCopies(o));
 
-  // foto final
   const fotoFinal = document.getElementById("foto-final");
   fotoFinal.addEventListener("change", (ev)=>{
     const file = ev.target.files?.[0];
@@ -787,7 +779,7 @@ window.removeItem = function(orderId, idx){
 }
 
 /***********************
- *  IMPRESSÃO 2 VIAS
+ *  IMPRESSÃO 2 VIAS (FIX: sem <script> dentro do HTML gerado)
  ************************/
 function escapeHtml(s){
   return (s||"").toString()
@@ -848,8 +840,8 @@ function buildTicketHTML(order, viaLabel){
 }
 
 function printTwoCopies(order){
-  // cria HTML de impressão (80mm)
   const html = `
+    <!doctype html>
     <html>
       <head>
         <meta charset="utf-8">
@@ -878,18 +870,26 @@ function printTwoCopies(order){
       <body>
         ${buildTicketHTML(order, "VIA DO CARRO")}
         ${buildTicketHTML(order, "VIA DO CAIXA")}
-        <script>
-          window.onload = () => { window.print(); setTimeout(()=>window.close(), 300); };
-        </script>
       </body>
     </html>
   `;
 
   const w = window.open("", "_blank");
-  if(!w){ alert("Seu navegador bloqueou a janela de impressão. Permita pop-ups."); return; }
+  if(!w){
+    alert("Seu navegador bloqueou a janela de impressão. Permita pop-ups.");
+    return;
+  }
+
   w.document.open();
   w.document.write(html);
   w.document.close();
+
+  // Imprime quando a janela terminar de carregar
+  w.onload = () => {
+    w.focus();
+    w.print();
+    setTimeout(()=>w.close(), 400);
+  };
 }
 
 /***********************
