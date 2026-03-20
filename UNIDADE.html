@@ -39,10 +39,9 @@
     .list li{background:#fff;border:1px solid #e9ecef;border-radius:12px;padding:10px;margin-top:8px}
     .list .top{display:flex;justify-content:space-between;gap:10px;align-items:center}
     .tag{display:inline-block;padding:2px 8px;border-radius:999px;background:#f1f3f5;font-weight:900;font-size:12px}
-
     /* Modal */
     .modalBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:14px;z-index:9999}
-    .modal{width:min(760px, 100%);background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:12px 14px}
+    .modal{width:min(720px, 100%);background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:12px 14px}
     .modal h3{margin:0 0 8px}
     .modal .closeRow{display:flex;justify-content:space-between;align-items:center;gap:10px}
     .modal .x{border:0;background:#000;color:#fff;border-radius:10px;padding:8px 10px;font-weight:1000;cursor:pointer}
@@ -57,6 +56,7 @@
 </header>
 
 <div class="wrap">
+
   <div class="card">
     <div class="pill">1) CONFIGURAÇÃO DA UNIDADE</div>
     <div class="row">
@@ -156,21 +156,11 @@
 </div>
 
 <!-- MODAL: selecionar cliente + lançar venda/pagamento -->
-<div class="modalBackdrop" id="modalPrazo">
-  <div class="modal">
+<div class="modalBackdrop" id="modalPrazo" title="Clique fora para fechar">
+  <div class="modal" onclick="event.stopPropagation()">
     <div class="closeRow">
-      <h3>Nota a Prazo — escolher cliente</h3>
+      <h3>Nota a Prazo — selecionar cliente</h3>
       <button class="x" id="closePrazo">X</button>
-    </div>
-
-    <!-- Cadastro rápido dentro do prazo (evita “cadastrei e não apareceu”) -->
-    <div class="box">
-      <b>Se o cliente não existe, cadastre aqui:</b>
-      <div class="row">
-        <div><input id="quickClientName" placeholder="Ex.: Fazenda Santa Clara" /></div>
-        <div><button class="btn primary" id="btnQuickAddClient" type="button">Cadastrar cliente</button></div>
-      </div>
-      <div class="small">Depois de cadastrar, ele aparece na lista abaixo na hora.</div>
     </div>
 
     <label>Buscar cliente</label>
@@ -203,8 +193,9 @@
       <input id="prazoObs" placeholder="Ex.: Lavagem caminhonete + cera" />
 
       <div class="right">
-        <button class="btn gray" id="btnBack" type="button">Voltar</button>
-        <button class="btn primary" id="btnAddPrazo" type="button">Salvar lançamento</button>
+        <button class="btn gray" id="btnBack">Voltar</button>
+        <button class="btn gray" id="btnCancelPrazo">Cancelar e fechar</button>
+        <button class="btn primary" id="btnAddPrazo">Salvar lançamento</button>
       </div>
     </div>
 
@@ -225,7 +216,7 @@
     <label>Novo cliente (nome)</label>
     <div class="row">
       <div><input id="newClient" placeholder="Ex.: Fazenda Santa Clara" /></div>
-      <div><button class="btn primary" id="btnAddClient" type="button">Adicionar</button></div>
+      <div><button class="btn primary" id="btnAddClient">Adicionar</button></div>
     </div>
 
     <div class="box">
@@ -241,9 +232,9 @@
 </div>
 
 <script>
-  // Versão FIX: garante que “clicou e não abriu” não aconteça + cadastro aparece na hora
-  const STORE = "unidade_fechamento_prazo_v2_fix";
-  const CLIENTS_KEY = "unidade_clientes_prazo_v2_fix";
+  const STORE = "unidade_fechamento_prazo_v1";
+  const CLIENTS_KEY = "unidade_clientes_prazo_v1";
+
   const UNITS = ["FAVORITO","PREFERIDO","PREDILETO"];
 
   function el(id){ return document.getElementById(id); }
@@ -257,7 +248,7 @@
     m.style.display="block";
     m.className = ok ? "ok" : "warn";
     m.textContent = text;
-    setTimeout(()=>m.style.display="none", 3200);
+    setTimeout(()=>m.style.display="none", 2800);
   }
 
   function loadDB(){
@@ -281,13 +272,11 @@
     return db.days[date];
   }
 
-  function normalizeClientName(name){
-    return (name||"").trim().replace(/\s+/g," ");
-  }
-
   function loadClients(){
     const raw = localStorage.getItem(CLIENTS_KEY);
-    if(!raw) return [];
+    if(!raw){
+      return ["CLIENTE EXEMPLO 1","CLIENTE EXEMPLO 2"];
+    }
     try{
       const arr = JSON.parse(raw);
       return Array.isArray(arr) ? arr : [];
@@ -295,20 +284,6 @@
   }
   function saveClients(arr){
     localStorage.setItem(CLIENTS_KEY, JSON.stringify(arr));
-  }
-  function addClientIfNotExists(name){
-    const clean = normalizeClientName(name);
-    if(!clean) return {ok:false, msg:"Digite o nome do cliente."};
-
-    let arr = loadClients().map(normalizeClientName).filter(Boolean);
-    const upper = clean.toUpperCase();
-    const exists = arr.some(c => c.toUpperCase() === upper);
-    if(exists) return {ok:false, msg:"Cliente já existe."};
-
-    arr.push(clean);
-    arr.sort((a,b)=>a.localeCompare(b,"pt-BR"));
-    saveClients(arr);
-    return {ok:true, msg:"Cliente cadastrado."};
   }
 
   function numVal(id){
@@ -346,7 +321,7 @@
         </div>
         <div class="small">${tx.obs ? tx.obs : ""} <span class="mono">${tx.time}</span></div>
         <div class="right">
-          <button class="btn danger" data-del="${idx}" style="margin-top:8px" type="button">Excluir</button>
+          <button class="btn danger" data-del="${idx}" style="margin-top:8px">Excluir</button>
         </div>
       `;
       ul.appendChild(li);
@@ -386,6 +361,7 @@
     const db = loadDB();
     const day = ensureDay(db, date);
 
+    // salva fechamento local
     day.fechamento = {
       unit, date,
       cars: Math.round(cars),
@@ -403,7 +379,10 @@
     lines.push(`CREDITO: ${Number(credit).toFixed(2)}`);
     lines.push(`DEBITO: ${Number(debit).toFixed(2)}`);
 
+    // prazo
     day.prazoTx.forEach(tx=>{
+      // Formato rígido para o Juliano importar sem erro
+      // PRAZO: CLIENTE=...; TIPO=VENDA|PAGAMENTO; VALOR=12.34; OBS=...
       const obs = (tx.obs||"").replaceAll(";", ",");
       lines.push(`PRAZO: CLIENTE=${tx.client}; TIPO=${tx.type}; VALOR=${Number(tx.value).toFixed(2)}; OBS=${obs}`);
     });
@@ -422,11 +401,11 @@
     const box = el("clientButtons");
     box.innerHTML = "";
 
-    const f = (filter||"").trim().toUpperCase();
+    const f = filter.trim().toUpperCase();
     const filtered = list.filter(c => c.toUpperCase().includes(f));
 
     if(!filtered.length){
-      box.innerHTML = `<div class="box"><b>Nenhum cliente encontrado.</b><div class="small">Cadastre no campo acima e ele aparece aqui.</div></div>`;
+      box.innerHTML = `<div class="box"><b>Nenhum cliente encontrado.</b><div class="small">Abra “Gerenciar clientes a prazo” para adicionar.</div></div>`;
       return;
     }
 
@@ -455,8 +434,6 @@
     el("clientButtons").style.display = "block";
     el("clientSearch").disabled = false;
     el("clientSearch").value = "";
-    el("quickClientName").value = "";
-    // ponto chave: sempre recarrega lista ao abrir
     renderClientButtons("");
   }
 
@@ -477,7 +454,7 @@
       li.innerHTML = `
         <div class="top">
           <div><b>${c}</b></div>
-          <div><button class="btn danger" data-rm="${idx}" style="margin-top:0" type="button">Remover</button></div>
+          <div><button class="btn danger" data-rm="${idx}" style="margin-top:0">Remover</button></div>
         </div>
       `;
       ul.appendChild(li);
@@ -490,12 +467,13 @@
         arr2.splice(i,1);
         saveClients(arr2);
         renderClients();
+        // Atualiza modal prazo também
         renderClientButtons(el("clientSearch").value || "");
       });
     });
   }
 
-  // Eventos - tudo com addEventListener (evita bug de clique)
+  // Eventos
   el("btnClearFields").addEventListener("click", ()=>{
     ["cars","pix","cash","credit","debit"].forEach(id=>el(id).value="");
     showMsg("Campos do fechamento limpos.", true);
@@ -505,46 +483,40 @@
     resetPrazoModal();
     openModal("modalPrazo");
   });
-
-  el("closePrazo").addEventListener("click", ()=> closeModal("modalPrazo"));
-  el("closeClients").addEventListener("click", ()=> closeModal("modalClients"));
-
+  el("closePrazo").addEventListener("click", ()=>{
+    resetPrazoModal();
+    closeModal("modalPrazo");
+  });
+  el("btnCancelPrazo").addEventListener("click", ()=>{
+    resetPrazoModal();
+    closeModal("modalPrazo");
+  });
+  el("modalPrazo").addEventListener("click", (e)=>{
+    if (e.target === el("modalPrazo")){
+      resetPrazoModal();
+      closeModal("modalPrazo");
+    }
+  });
   el("btnBack").addEventListener("click", ()=>{
     chosenClient = null;
     el("step2").style.display = "none";
     el("clientButtons").style.display = "block";
     el("clientSearch").disabled = false;
-    renderClientButtons(el("clientSearch").value || "");
   });
 
   el("clientSearch").addEventListener("input", ()=>{
     renderClientButtons(el("clientSearch").value || "");
   });
 
-  // cadastro rápido no modal prazo
-  el("btnQuickAddClient").addEventListener("click", ()=>{
-    const name = el("quickClientName").value;
-    const r = addClientIfNotExists(name);
-    if(!r.ok){
-      showMsg(r.msg, false);
-      return;
-    }
-    showMsg("Cliente cadastrado. Agora selecione ele na lista.", true);
-    el("quickClientName").value = "";
-    renderClientButtons(el("clientSearch").value || "");
-  });
-
   el("btnAddPrazo").addEventListener("click", ()=>{
     const date = el("date").value || todayISO();
     const v = numVal("prazoValue");
-
     if(!chosenClient){
       showMsg("Escolha o cliente.", false); return;
     }
     if(v===null || v<=0){
       showMsg("Valor do prazo deve ser maior que zero.", false); return;
     }
-
     const type = el("prazoType").value;
     const obs = (el("prazoObs").value||"").trim();
 
@@ -572,15 +544,22 @@
     renderClients();
     openModal("modalClients");
   });
+  el("closeClients").addEventListener("click", ()=> closeModal("modalClients"));
 
   el("btnAddClient").addEventListener("click", ()=>{
-    const name = el("newClient").value;
-    const r = addClientIfNotExists(name);
-    if(!r.ok){
-      showMsg(r.msg, false);
+    const name = (el("newClient").value||"").trim();
+    if(!name){ return; }
+    const up = name.toUpperCase();
+    let arr = loadClients().map(x=>x.trim()).filter(Boolean);
+
+    if(arr.map(x=>x.toUpperCase()).includes(up)){
+      showMsg("Cliente já existe.", false);
       return;
     }
-    el("newClient").value = "";
+    arr.push(name);
+    arr.sort((a,b)=>a.localeCompare(b,"pt-BR"));
+    saveClients(arr);
+    el("newClient").value="";
     renderClients();
     renderClientButtons(el("clientSearch").value || "");
     showMsg("Cliente adicionado.", true);
@@ -630,6 +609,7 @@
 
   // init
   el("date").value = todayISO();
+  renderClientButtons("");
   renderPrazoList();
 </script>
 </body>
