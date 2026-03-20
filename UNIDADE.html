@@ -114,7 +114,35 @@
 
     <div class="divider"></div>
 
-    <div class="pill">3) NOTA A PRAZO (POP-UP)</div>
+    <div class="pill">3) DESPESAS (LANCHES, REFEIÇÕES)</div>
+    <div class="small">
+      Registre gastos em dinheiro do dia: lanches, refeições dos funcionários, etc.
+    </div>
+
+    <div class="row" style="margin-top:8px">
+      <div>
+        <label>Descrição</label>
+        <input id="despesaDesc" placeholder="Ex.: Lanches funcionários" />
+      </div>
+      <div>
+        <label>Valor (R$)</label>
+        <input id="despesaValor" type="number" min="0" step="0.01" placeholder="Ex.: 85,50" />
+      </div>
+    </div>
+    <div class="right" style="margin-top:8px">
+      <button class="btn primary" id="btnAddDespesa">Adicionar despesa</button>
+    </div>
+
+    <div class="box" id="despesasBox">
+      <b>Despesas deste dia:</b>
+      <ul class="list" id="despesasList"></ul>
+      <div class="small" id="despesasHint">Nenhuma despesa registrada.</div>
+      <div class="small" id="despesasTotal" style="margin-top:8px;font-weight:900"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="pill">4) NOTA A PRAZO (POP-UP)</div>
     <div class="small">
       Use para cliente que vai pagar depois. Você escolhe o cliente na lista (não digita nome solto).
       <br><b>VENDA</b> aumenta a dívida. <b>PAGAMENTO</b diminui a dívida.
@@ -133,10 +161,10 @@
 
     <div class="divider"></div>
 
-    <div class="pill">4) ENVIAR PARA O JULIANO (WHATSAPP)</div>
+    <div class="pill">5) ENVIAR PARA O JULIANO (WHATSAPP)</div>
     <div class="small">
       Aperte “Gerar Mensagem”, confira e depois “Enviar WhatsApp”.
-      <br>O Juliano vai copiar e colar no painel dele e importar.
+      <br>O Juliano vai copiar e colar no painel dele e importar. (Inclui fechamento, despesas e nota a prazo.)
     </div>
 
     <div class="right" style="margin-top:8px">
@@ -150,6 +178,7 @@
     <div class="right">
       <button class="btn gray" id="btnCopy">Copiar mensagem</button>
       <button class="btn danger" id="btnClearDayPrazo">Zerar PRAZO do dia (cuidado)</button>
+      <button class="btn danger" id="btnClearDayDespesas">Zerar DESPESAS do dia (cuidado)</button>
     </div>
 
   </div>
@@ -266,9 +295,10 @@
 
   function ensureDay(db, date){
     if(!db.days[date]){
-      db.days[date] = { fechamento: null, prazoTx: [] };
+      db.days[date] = { fechamento: null, prazoTx: [], despesas: [] };
     }
     if(!Array.isArray(db.days[date].prazoTx)) db.days[date].prazoTx = [];
+    if(!Array.isArray(db.days[date].despesas)) db.days[date].despesas = [];
     return db.days[date];
   }
 
@@ -339,6 +369,50 @@
     });
   }
 
+  function renderDespesasList(){
+    const date = el("date").value || todayISO();
+    const db = loadDB();
+    const day = ensureDay(db, date);
+    const ul = el("despesasList");
+    ul.innerHTML = "";
+
+    if(!day.despesas.length){
+      el("despesasHint").textContent = "Nenhuma despesa registrada.";
+      el("despesasTotal").textContent = "";
+      return;
+    }
+    el("despesasHint").textContent = "";
+
+    let total = 0;
+    day.despesas.forEach((d, idx)=>{
+      total += Number(d.value);
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <div class="top">
+          <div><b>${d.desc}</b></div>
+          <div><b>${fmtMoney(d.value)}</b></div>
+        </div>
+        <div class="right">
+          <button class="btn danger" data-del="${idx}" style="margin-top:8px">Excluir</button>
+        </div>
+      `;
+      ul.appendChild(li);
+    });
+
+    el("despesasTotal").textContent = `Total despesas: ${fmtMoney(total)}`;
+
+    ul.querySelectorAll("button[data-del]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const i = Number(btn.getAttribute("data-del"));
+        const db2 = loadDB();
+        const day2 = ensureDay(db2, date);
+        day2.despesas.splice(i,1);
+        saveDB(db2);
+        renderDespesasList();
+      });
+    });
+  }
+
   function buildMessage(){
     const unit = el("unit").value;
     const date = el("date").value || todayISO();
@@ -378,6 +452,12 @@
     lines.push(`DINHEIRO: ${Number(cash).toFixed(2)}`);
     lines.push(`CREDITO: ${Number(credit).toFixed(2)}`);
     lines.push(`DEBITO: ${Number(debit).toFixed(2)}`);
+
+    // despesas
+    day.despesas.forEach(d=>{
+      const desc = (d.desc||"").replaceAll(";", ",");
+      lines.push(`DESPESA: DESCRICAO=${desc}; VALOR=${Number(d.value).toFixed(2)}`);
+    });
 
     // prazo
     day.prazoTx.forEach(tx=>{
@@ -607,10 +687,43 @@
     showMsg("PRAZO do dia zerado.", true);
   });
 
+  el("btnAddDespesa").addEventListener("click", ()=>{
+    const date = el("date").value || todayISO();
+    const desc = (el("despesaDesc").value||"").trim();
+    const v = numVal("despesaValor");
+    if(!desc){ showMsg("Informe a descrição da despesa.", false); return; }
+    if(v===null || v<=0){ showMsg("Valor deve ser maior que zero.", false); return; }
+    const db = loadDB();
+    const day = ensureDay(db, date);
+    day.despesas.push({ desc, value: Number(v) });
+    saveDB(db);
+    el("despesaDesc").value = "";
+    el("despesaValor").value = "";
+    renderDespesasList();
+    showMsg("Despesa adicionada.", true);
+  });
+
+  el("btnClearDayDespesas").addEventListener("click", ()=>{
+    const date = el("date").value || todayISO();
+    if(!confirm("Zerar as DESPESAS desse dia?")) return;
+    const db = loadDB();
+    const day = ensureDay(db, date);
+    day.despesas = [];
+    saveDB(db);
+    renderDespesasList();
+    showMsg("Despesas do dia zeradas.", true);
+  });
+
+  el("date").addEventListener("change", ()=>{
+    renderPrazoList();
+    renderDespesasList();
+  });
+
   // init
   el("date").value = todayISO();
   renderClientButtons("");
   renderPrazoList();
+  renderDespesasList();
 </script>
 </body>
 </html>
